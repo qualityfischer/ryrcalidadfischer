@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de captura R&amp;R Fischer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #214999;       /* Azul Corporativo de Fischer */
+            --accent-color: #214999;        /* Enfoque Azul Institucional */
+            --success-color: #059669;       /* Verde Control de Calidad (Aprobado) */
+            --danger-color: #dc2626;        /* Rojo Alerta (Fuera de Especificación) */
+            --warning-color: #d97706;       /* Ámbar Precaución */
+            --bg-piso: #f1f5f9;              /* Fondo gris claro limpio para laboratorios */
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-ui: #cbd5e1;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
+
+        body { 
+            background-color: var(--bg-piso); 
+            color: var(--text-main); 
+            padding: 20px 12px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 480px; 
+        }
+
+        /* ENCABEZADO CORPORATIVO FISCHER */
+        header { 
+            background: #ffffff;
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .logo-container {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .header-text {
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            width: 100%;
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+
+        .header-text h1 {
+            color: var(--primary-color);
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text p {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 1px;
+        }
+
+        /* TARJETAS DE TRABAJO (CARDS) */
+        .card { 
+            background: var(--card-bg); 
+            padding: 24px 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03), 0 2px 4px -2px rgba(0,0,0,0.03); 
+            margin-bottom: 16px; 
+            border: 1px solid #e2e8f0; 
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f1f5f9;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        
+        label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 6px; 
+            font-size: 0.85rem; 
+            color: #475569; 
+        }
+
+        input, select { 
+            width: 100%; 
+            padding: 12px 14px; 
+            border: 1.5px solid #cbd5e1; 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            color: var(--text-main);
+            outline: none; 
+            background: #fff; 
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus { 
+            border-color: var(--accent-color); 
+            box-shadow: 0 0 0 3px rgba(33, 73, 153, 0.15);
+        }
+
+        .row { display: flex; gap: 12px; }
+
+        /* ÁREA DE CAPTURA GIGANTE */
+        .input-pieza-gigante { 
+            font-size: 3.2rem; 
+            text-align: center; 
+            font-weight: 800; 
+            padding: 8px; 
+            border: 2px dashed var(--primary-color); 
+            color: var(--primary-color); 
+            background: #f8fafc; 
+            border-radius: 14px; 
+            letter-spacing: -1px;
+        }
+        .input-pieza-gigante:focus {
+            border-style: solid;
+            background: #fff;
+        }
+
+        .btn-container { display: flex; gap: 12px; margin-top: 16px; }
+        
+        .btn-captura { 
+            flex: 1; 
+            padding: 20px 10px; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            color: white; 
+            cursor: pointer; 
+            transition: transform 0.1s ease, opacity 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .btn-captura:active { transform: scale(0.98); }
+        .btn-ok { background-color: var(--success-color); }
+        .btn-nok { background-color: var(--danger-color); }
+
+        .status-box { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #f8fafc; 
+            padding: 12px 16px; 
+            border-radius: 10px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            border: 1px solid #e2e8f0; 
+            margin-bottom: 16px; 
+        }
+        
+        /* INFORMACIÓN EN VIVO (PISO) */
+        .panel-info-piso { 
+            margin-top: 16px; 
+            background: #f8fafc; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 1px solid #e2e8f0; 
+        }
+        .panel-titulo { 
+            font-size: 0.75rem; 
+            color: var(--text-muted); 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            margin-bottom: 10px; 
+            border-bottom: 1px solid #e2e8f0; 
+            padding-bottom: 6px; 
+            letter-spacing: 0.5px;
+        }
+        
+        .inspector-progreso { margin-bottom: 10px; }
+        .inspector-meta { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
+        .barra-gris { background: #e2e8f0; width: 100%; height: 6px; border-radius: 3px; overflow: hidden; }
+        .barra-color { background: var(--accent-color); height: 100%; width: 0%; transition: width 0.3s ease; }
+        
+        .bitacora-lista { max-height: 180px; overflow-y: auto; font-size: 0.85rem; }
+        .bitacora-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid #e2e8f0; font-weight: 500; }
+        .bitacora-acciones { display: flex; align-items: center; gap: 8px; }
+        .tag-resultado { padding: 3px 8px; border-radius: 6px; font-weight: 700; color: white; font-size: 0.75rem; text-transform: uppercase; }
+        .tag-ok { background-color: var(--success-color); }
+        .tag-nok { background-color: var(--danger-color); }
+        .tag-var { background-color: var(--accent-color); }
+        .tag-alerta { background-color: var(--warning-color); color: #fff; }
+        
+        .btn-editar-item { background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; color: var(--text-main); }
+        .btn-editar-item:hover { background: #cbd5e1; }
+        
+        .alerta-cambio { background: #eff6ff; color: #1e40af; padding: 12px; border-radius: 10px; text-align: center; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px; border: 1px solid #bfdbfe; box-shadow: 0 2px 4px rgba(33,73,153,0.05); }
+        
+        /* BOTONES DE ACCIÓN PRINCIPALES */
+        .btn-action { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--primary-color); 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            font-weight: 600; 
+            margin-top: 12px; 
+            cursor: pointer; 
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-action:hover { background-color: #1a3a7a; }
+        .btn-download { background: var(--accent-color); }
+        .btn-download:hover { background: #1a3a7a; }
+        .btn-danger-clear { background: #94a3b8; font-size: 0.8rem; padding: 8px; margin-top: 24px; opacity: 0.7; }
+        .btn-danger-clear:hover { opacity: 1; background: #64748b; }
+        
+        .hidden { display: none; }
+
+        /* TABLA MÁSTER DE ESTÁNDAR */
+        .tabla-estandar-scroll { max-height: 280px; overflow-y: auto; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 10px; }
+        .tabla-estandar { width: 100%; border-collapse: collapse; text-align: center; }
+        .tabla-estandar th { background: #f8fafc; color: var(--text-muted); padding: 10px; position: sticky; top: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .tabla-estandar td { padding: 8px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        .btn-toggle-std { padding: 6px 14px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; width: 75px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="LOGO-SIN-TEXTO.png" alt="Fischer S.A. de C.V.">
+            </div>
+            <div class="header-text">
+                <h1>Sistema de captura R&R</h1>
+                <p>🟢Mejora Continua🟢 </p>
+            </div>
+        </header>
+
+        <div id="pantalla-config" class="card">
+            <div class="card-title"> ⚙️ Inicialización del Estudio R&amp;R</div>
+            <div class="form-group">
+                <label>🛠️ Dispositivo / Equipo:</label>
+                <input type="text" id="cfg-equipo" placeholder="Gauge / PokaYoke / Vernier" oninput="this.value = this.value.toUpperCase()">
+            </div>
+            <div class="form-group">
+                <label>Tipo de Estudio:</label>
+                <select id="cfg-tipo" onchange="toggleTipoEstudio()">
+                    <option value="Atributos"> Atributos (OK / NOK) </option>
+                    <option value="Variables"> Variables (Medición) </option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="form-group" style="flex:1;">
+                    <label>📦 Nº de Muestras (Piezas):</label>
+                    <input type="number" id="cfg-muestra" value="10" min="1" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label>👷‍♂️ Operadores:</label>
+                    <input type="number" id="cfg-num-ops" value="3" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, ''); generarInputsOperadores();">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>📝 Administrador:</label>
+                <input type="text" id="cfg-visa" placeholder="" oninput="this.value = this.value.toUpperCase()">
+            </div>
+            
+            <div id="seccion-visas-ops">
+                <label style="color: var(--accent-color); margin-top: 15px; margin-bottom: 8px;"> Operadores (Visas)</label>
+                <div id="contenedor-operadores-inputs"></div>
+            </div>
+            
+            <button class="btn-action" onclick="validarEIniciar()">Comenzar Estudio R&R ⏯️</button>
+        </div>
+
+        <div id="pantalla-estandar" class="card hidden">
+            <div class="card-title">🎯 Alineación del Master / Estándar</div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px;">Defina el criterio de referencia original para las muestras del estudio.</p>
+            
+            <div class="tabla-estandar-scroll">
+                <table class="tabla-estandar">
+                    <thead>
+                        <tr>
+                            <th>Muestra</th>
+                            <th>Estado Estándar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla-estandar"></tbody>
+                </table>
+            </div>
+            <button class="btn-action" style="background:var(--success-color);" onclick="guardarEstandarEIniciarCaptura()">Confirmar Estándar e Iniciar Captura</button>
+        </div>
+
+        <div id="pantalla-captura" class="card hidden">
+            <div id="notificacion-sistema" class="alerta-cambio hidden"></div>
+            
+            <div class="status-box">
+                <span id="txt-info-estudio">-</span>
+                <span id="txt-contador" style="color: var(--accent-color);">Total: 0</span>
+            </div>
+            
+            <div class="row">
+                <div class="form-group" style="flex: 1;">
+                    <label>Operador actual:</label>
+                    <input type="text" id="cap-inspector" placeholder="Seleccionar" list="datalist-inspectores-captura" onchange="cambioOperadorCaptura()" oninput="this.value = this.value.toUpperCase()">
+                    <datalist id="datalist-inspectores-captura"></datalist>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Ensayo:</label>
+                    <select id="cap-ensayo" onchange="cambioFiltroCaptura()">
+                        <option value="1">1ª Ensayo</option>
+                        <option value="2">2º Ensayo</option>
+                        <option value="3">3º Ensayo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+                <label style="text-align: center; display: block;" id="lbl-pieza-status"># NÚMERO DE PIEZA</label>
+                <input type="number" id="cap-pieza" class="input-pieza-gigante" pattern="[0-9]*" inputmode="numeric" placeholder="0" onkeydown="manejarEnterPieza(event)">
+            </div>
+
+            <div id="bloque-atributos" class="btn-container">
+                <button class="btn-captura btn-ok" onclick="registrarDato('OK')">OK</button>
+                <button class="btn-captura btn-nok" onclick="registrarDato('NOK')">NOK</button>
+            </div>
+
+            <div id="bloque-variables" class="form-group hidden" style="margin-top: 15px;">
+                <label>Medición:</label>
+                <input type="number" id="cap-valor-variable" step="any" placeholder="0.0000" onkeydown="manejarEnterValor(event)" style="font-size: 1.2rem; font-weight: bold; text-align: center; padding: 12px;">
+                <button class="btn-action" onclick="registrarDato(document.getElementById('cap-valor-variable').value)" style="background: var(--accent-color);">Confirmar y Registrar Valor</button>
+            </div>
+
+            <div class="panel-info-piso">
+                <div class="panel-titulo" id="titulo-bitacora">Monitoreo de Piezas Evaluadas</div>
+                <div id="bitacora-piezas" class="bitacora-lista"></div>
+            </div>
+
+            <div class="panel-info-piso">
+                <div class="panel-titulo">Avance</div>
+                <div id="lista-progresos"></div>
+            </div>
+        </div>
+
+        <div id="pantalla-acciones" class="card hidden">
+            <button class="btn-action btn-download" onclick="exportarAExcel()">📥 Descargar Matriz para Minitab (.xlsx)</button>
+            <button class="btn-action btn-danger-clear" onclick="reiniciarTodo()">‼️Borrar informacion y Crear Nuevo Estudio‼️</button>
+        </div>
+    </div>
+
+    <script>
+        let configuracion = {}; let registros = []; let listaInspectores = []; let mapaEstandar = {};
+
+        window.onload = function() {
+            generarInputsOperadores();
+            if(localStorage.getItem('ryr_config')) {
+                configuracion = JSON.parse(localStorage.getItem('ryr_config'));
+                registros = JSON.parse(localStorage.getItem('ryr_registros')) || [];
+                mapaEstandar = JSON.parse(localStorage.getItem('ryr_estandar')) || {};
+                listaInspectores = configuracion.inspectores;
+                inicializarInterfazCaptura();
+                document.getElementById('cap-inspector').value = localStorage.getItem('ryr_last_inspector') || "";
+                document.getElementById('cap-ensayo').value = localStorage.getItem('ryr_last_ensayo') || '1';
+                toggleTipoEstudioUI(configuracion.tipo);
+                actualizarInterfazCompleta();
+                document.getElementById('pantalla-config').classList.add('hidden');
+                document.getElementById('pantalla-captura').classList.remove('hidden');
+                document.getElementById('pantalla-acciones').classList.remove('hidden');
+            }
+        }
+
+        function generarInputsOperadores() {
+            let num = parseInt(document.getElementById('cfg-num-ops').value);
+            if (isNaN(num) || num < 0) num = 0;
+            const contenedor = document.getElementById('contenedor-operadores-inputs');
+            contenedor.innerHTML = "";
+            for(let i=1; i<=num; i++) {
+                contenedor.innerHTML += `<div class="form-group" style="margin-bottom:8px;"><input type="text" id="cfg-ins${i}" placeholder="VISA Operador ${i}" oninput="this.value = this.value.toUpperCase()"></div>`;
+            }
+        }
+
+        function toggleTipoEstudio() { toggleTipoEstudioUI(document.getElementById('cfg-tipo').value); }
+        function toggleTipoEstudioUI(tipo) {
+            if(tipo === 'Atributos') {
+                document.getElementById('bloque-atributos').classList.remove('hidden');
+                document.getElementById('bloque-variables').classList.add('hidden');
+            } else {
+                document.getElementById('bloque-atributos').classList.add('hidden');
+                document.getElementById('bloque-variables').classList.remove('hidden');
+            }
+        }
+
+        function validarEIniciar() {
+            const equipo = document.getElementById('cfg-equipo').value.trim().toUpperCase();
+            const visa = document.getElementById('cfg-visa').value.trim().toUpperCase();
+            let numOps = parseInt(document.getElementById('cfg-num-ops').value);
+            const cantidadMuestra = parseInt(document.getElementById('cfg-muestra').value);
+
+            if(isNaN(numOps) || numOps < 0) numOps = 0;
+            if(!equipo || !visa) { alert("Complete los datos requeridos: Identificador de Equipo y VISA del Administrador."); return; }
+            if(!cantidadMuestra || cantidadMuestra <= 0) { alert("La cantidad de muestras debe ser un entero positivo mayor a cero."); return; }
+
+            listaInspectores = [];
+            for(let i=1; i<=numOps; i++) {
+                let el = document.getElementById(`cfg-ins${i}`);
+                let val = el ? el.value.trim().toUpperCase() : "";
+                if(val !== "") listaInspectores.push(val);
+            }
+
+            configuracion = {
+                equipo: equipo, tipo: document.getElementById('cfg-tipo').value,
+                muestra: cantidadMuestra, visa: visa, inspectores: listaInspectores
+            };
+
+            document.getElementById('pantalla-config').classList.add('hidden');
+
+            if(configuracion.tipo === "Atributos") {
+                document.getElementById('pantalla-estandar').classList.remove('hidden');
+                armarTablaEstandar(configuracion.muestra);
+            } else {
+                mapaEstandar = {};
+                iniciarEstudioOficial();
+            }
+        }
+
+        function armarTablaEstandar(total) {
+            const cuerpo = document.getElementById('cuerpo-tabla-estandar');
+            cuerpo.innerHTML = "";
+            for(let i=1; i<=total; i++) {
+                cuerpo.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:var(--primary-color);">Pieza #${i}</td>
+                        <td><button id="btn-std-${i}" class="btn-toggle-std btn-ok" onclick="toggleEstandarItem(${i})">OK</button></td>
+                    </tr>`;
+                mapaEstandar[i] = "OK";
+            }
+        }
+
+        function toggleEstandarItem(id) {
+            const btn = document.getElementById(`btn-std-${id}`);
+            if(mapaEstandar[id] === "OK") {
+                mapaEstandar[id] = "NOK";
+                btn.innerText = "NOK";
+                btn.className = "btn-toggle-std btn-nok";
+            } else {
+                mapaEstandar[id] = "OK";
+                btn.innerText = "OK";
+                btn.className = "btn-toggle-std btn-ok";
+            }
+        }
+
+        function guardarEstandarEIniciarCaptura() {
+            localStorage.setItem('ryr_estandar', JSON.stringify(mapaEstandar));
+            document.getElementById('pantalla-estandar').classList.add('hidden');
+            iniciarEstudioOficial();
+        }
+
+        function iniciarEstudioOficial() {
+            localStorage.setItem('ryr_config', JSON.stringify(configuracion));
+            localStorage.setItem('ryr_registros', JSON.stringify([]));
+            registros = [];
+            inicializarInterfazCaptura();
+            actualizarInterfazCompleta();
+            document.getElementById('pantalla-captura').classList.remove('hidden');
+            document.getElementById('pantalla-acciones').classList.remove('hidden');
+            document.getElementById('cap-pieza').focus();
+        }
+
+        function inicializarInterfazCaptura() {
+            document.getElementById('txt-info-estudio').innerText = `Equipo: ${configuracion.equipo} | Administrador: ${configuracion.visa}`;
+            actualizarDatalistInspectores();
+        }
+
+        function actualizarDatalistInspectores() {
+            const dl = document.getElementById('datalist-inspectores-captura');
+            dl.innerHTML = "";
+            let setInspectores = new Set(listaInspectores);
+            registros.forEach(r => setInspectores.add(r.Inspector));
+            setInspectores.forEach(ins => {
+                if(ins.trim() !== "") {
+                    let opt = document.createElement('option');
+                    opt.value = ins;
+                    dl.appendChild(opt);
+                }
+            });
+        }
+
+        function manejarEnterPieza(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                const piezaVal = document.getElementById('cap-pieza').value;
+                if (!piezaVal || parseInt(piezaVal) <= 0 || parseInt(piezaVal) > configuracion.muestra) {
+                    alert(`ID de muestra fuera de rango. Ingrese un valor correlativo entre 1 y ${configuracion.muestra}`);
+                    return;
+                }
+                if (configuracion.tipo === "Variables") {
+                    document.getElementById('cap-valor-variable').focus();
+                }
+            }
+        }
+
+        function manejarEnterValor(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                const valor = document.getElementById('cap-valor-variable').value;
+                if (valor === "") {
+                    alert("Campo numérico vacío. Ingrese la magnitud detectada.");
+                    return;
+                }
+                registrarDato(valor);
+            }
+        }
+
+        function registrarDato(valorResultado) {
+            const piezaInput = document.getElementById('cap-pieza');
+            const pieza = parseInt(piezaInput.value);
+            const inspector = document.getElementById('cap-inspector').value.trim().toUpperCase();
+            const ensayoSelect = document.getElementById('cap-ensayo');
+            const ensayo = parseInt(ensayoSelect.value);
+
+            if(!inspector) { alert("Asignación de operador ausente. Escriba o seleccione una VISA válida antes de guardar."); return; }
+            if(!pieza || pieza <= 0 || pieza > configuracion.muestra) {
+                alert(`Validación de Pieza Fallida: Rango aceptado de 1 a ${configuracion.muestra}`); return;
+            }
+            if(valorResultado === "") return;
+
+            let valorFormateado = (typeof valorResultado === 'string') ? valorResultado.toUpperCase() : valorResultado;
+
+            registros = registros.filter(r => !(r.Inspector === inspector && r.Ensayo === ensayo && r.Pieza === pieza));
+
+            registros.push({
+                Equipo: configuracion.equipo, Tipo_Estudio: configuracion.tipo,
+                Muestra: configuracion.muestra, Visa: configuracion.visa,
+                Inspector: inspector, Ensayo: ensayo, Pieza: pieza, Resultado: valorFormateado
+            });
+
+            localStorage.setItem('ryr_registros', JSON.stringify(registros));
+            
+            piezaInput.value = ""; 
+            document.getElementById('cap-valor-variable').value = "";
+            document.getElementById('lbl-pieza-status').innerText = "# NÚMERO DE PIEZA";
+            document.getElementById('lbl-pieza-status').style.color = "";
+
+            const totalCapturadoEnEnsayoActual = registros.filter(r => r.Inspector === inspector && r.Ensayo === ensayo).length;
+            if (totalCapturadoEnEnsayoActual === configuracion.muestra) {
+                if (ensayo < 3) {
+                    const nuevoEnsayo = ensayo + 1;
+                    ensayoSelect.value = nuevoEnsayo;
+                    mostrarNotificacion("🟢 Corrida " + ensayo + " completa para Operador " + inspector + ". Transición automática a Ensayo " + nuevoEnsayo + ".");
+                } else {
+                    mostrarNotificacion("🏆 Ciclo completo (3 Ensayos) registrado con éxito para el Operador " + inspector + ".");
+                }
+            }
+
+            guardarEstado();
+            actualizarInterfazCompleta(); 
+            piezaInput.focus();
+        }
+
+        function triggerEditar(numPieza) {
+            const pInput = document.getElementById('cap-pieza');
+            pInput.value = numPieza;
+            const lbl = document.getElementById('lbl-pieza-status');
+            lbl.innerText = "⚠️ CORRIGIENDO MUESTRA #" + numPieza;
+            lbl.style.color = "var(--danger-color)";
+            pInput.focus();
+        }
+
+        function mostrarNotificacion(msj) {
+            const box = document.getElementById('notificacion-sistema');
+            box.innerText = msj; box.classList.remove('hidden');
+            setTimeout(() => { box.classList.add('hidden'); }, 4000);
+        }
+
+        function guardarEstado() {
+            localStorage.setItem('ryr_last_inspector', document.getElementById('cap-inspector').value);
+            localStorage.setItem('ryr_last_ensayo', document.getElementById('cap-ensayo').value);
+        }
+
+        function cambioOperadorCaptura() {
+            document.getElementById('cap-ensayo').value = "1";
+            cambioFiltroCaptura();
+        }
+
+        function cambioFiltroCaptura() {
+            guardarEstado();
+            document.getElementById('lbl-pieza-status').innerText = "# NÚMERO DE PIEZA";
+            document.getElementById('lbl-pieza-status').style.color = "";
+            actualizarBitacora();
+            actualizarProgreso();
+        }
+
+        function actualizarInterfazCompleta() {
+            actualizarDatalistInspectores();
+            actualizarProgreso();
+            actualizarBitacora();
+        }
+
+        function actualizarProgreso() {
+            document.getElementById('txt-contador').innerText = "Registros: " + registros.length;
+            const meta = configuracion.muestra * 3;
+            const contenedor = document.getElementById('lista-progresos');
+            contenedor.innerHTML = "";
+
+            let setInspectores = new Set(listaInspectores);
+            registros.forEach(r => setInspectores.add(r.Inspector));
+
+            setInspectores.forEach(ins => {
+                if(ins.trim() === "") return;
+                const conteo = registros.filter(r => r.Inspector === ins).length;
+                const porc = Math.min(Math.round((conteo / meta) * 100), 100);
+                contenedor.innerHTML += `
+                    <div class="inspector-progreso">
+                        <div class="inspector-meta"><span>Operador ${ins}</span><span>${conteo}/${meta} (${porc}%)</span></div>
+                        <div class="barra-gris"><div class="barra-color" style="width: ${porc}%; background: ${porc === 100 ? 'var(--success-color)' : 'var(--accent-color)'};"></div></div>
+                    </div>`;
+            });
+        }
+
+        function actualizarBitacora() {
+            const inspectorActual = document.getElementById('cap-inspector').value.trim().toUpperCase();
+            const ensayoActual = parseInt(document.getElementById('cap-ensayo').value);
+            document.getElementById('titulo-bitacora').innerText = "RESUMEN : " + (inspectorActual || '...') + " - Ensayo " + ensayoActual;
+            
+            const contenedorBitacora = document.getElementById('bitacora-piezas');
+            contenedorBitacora.innerHTML = "";
+
+            if(!inspectorActual) return;
+
+            let registrosFiltrados = registros.filter(r => r.Inspector === inspectorActual && r.Ensayo === ensayoActual);
+            registrosFiltrados.sort((a,b) => b.Pieza - a.Pieza);
+
+            if(registrosFiltrados.length === 0) {
+                contenedorBitacora.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding: 12px; font-style:italic; font-size:0.8rem;">Sin registros activos en esta corrida.</div>`;
+                return;
+            }
+
+            registrosFiltrados.forEach(r => {
+                let claseTag = 'tag-var';
+                let extraTxt = "";
+                
+                if(configuracion.tipo === 'Atributos') {
+                    if(r.Resultado === 'OK') claseTag = 'tag-ok';
+                    if(r.Resultado === 'NOK') claseTag = 'tag-nok';
+                    
+                    let stdActual = mapaEstandar[r.Pieza];
+                    if(stdActual && r.Resultado !== stdActual) {
+                        claseTag = 'tag-alerta';
+                        extraTxt = " [Std: " + stdActual + "]";
+                    }
+                }
+
+                contenedorBitacora.innerHTML += `
+                    <div class="bitacora-item">
+                        <span>📦 Muestra #${r.Pieza}<span style="color:var(--warning-color); font-weight:bold;">${extraTxt}</span></span>
+                        <div class="bitacora-acciones">
+                            <span class="tag-resultado ${claseTag}">${r.Resultado}</span>
+                            <button class="btn-editar-item" onclick="triggerEditar(${r.Pieza})">✏️</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function reiniciarTodo() {
+            if(confirm("¿Seguro que desea eliminar el estudio actual y crear uno nuevo? Se borrarán todos los datos capturados.")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function exportarAExcel() {
+            if (registros.length === 0) {
+                alert("No hay datos para exportar.");
+                return;
+            }
+
+            let datosExcel = [];
+
+            if (configuracion.tipo === "Variables") {
+                // ESTRUCTURA VERTICAL ESTRICTA (Basada en image_5c4c4c.png)
+                // Se ordenan los datos tal como lo requiere Minitab: por Ensayo, luego por Inspector y luego por Muestra
+                let registrosVariables = [...registros];
+                registrosVariables.sort((a, b) => {
+                    if (a.Ensayo !== b.Ensayo) return a.Ensayo - b.Ensayo;
+                    if (a.Inspector !== b.Inspector) return a.Inspector.localeCompare(b.Inspector);
+                    return a.Pieza - b.Pieza;
+                });
+
+                registrosVariables.forEach(r => {
+                    datosExcel.push({
+                        "ENSAYO": r.Ensayo,
+                        "INSPECTOR": r.Inspector,
+                        "MUESTRA": r.Pieza,
+                        "MEDICION": parseFloat(r.Resultado) || r.Resultado
+                    });
+                });
+
+            } else {
+                // ESTRUCTURA MATRICIAL HORIZONTAL (Basada en image_545c42.png)
+                let setOps = new Set();
+                registros.forEach(r => setOps.add(r.Inspector));
+                let arrOps = Array.from(setOps).sort();
+                let totalMuestras = configuracion.muestra;
+
+                for (let i = 1; i <= totalMuestras; i++) {
+                    let fila = {};
+                    fila["MUESTRA"] = i;
+                    fila["ESTÁNDAR"] = mapaEstandar[i] || "";
+
+                    arrOps.forEach(op => {
+                        for (let ensayo = 1; ensayo <= 3; ensayo++) {
+                            let nombreColumna = `${op}${ensayo}`;
+                            let registroEncontrado = registros.find(r => 
+                                r.Pieza === i && r.Inspector === op && r.Ensayo === ensayo
+                            );
+                            fila[nombreColumna] = registroEncontrado ? registroEncontrado.Resultado : "";
+                        }
+                    });
+                    datosExcel.push(fila);
+                }
+            }
+
+            // Generación del archivo XLSX usando SheetJS
+            const ws = XLSX.utils.json_to_sheet(datosExcel);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Datos R&R Minitab");
+
+            const nombreArchivo = `R&R_${configuracion.tipo}_${configuracion.equipo}.xlsx`;
+            XLSX.writeFile(wb, nombreArchivo);
+        }
+    </script>
+</body>
+</html>
