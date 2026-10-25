@@ -102,6 +102,9 @@
         .pie-portal { margin-top: 38px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .76rem; color: #8793A5; text-align: center; }
 
         .fila-cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .fila-btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+        @media (max-width: 420px) { .fila-cab { flex-wrap: wrap; } .btn-qr { padding: 8px 11px; font-size: .78rem; gap: 6px; } }
+        .btn-salir { display: none; color: #B42318; }
         .btn-qr { display: inline-flex; align-items: center; gap: 8px; padding: 9px 15px; border: 1.5px solid var(--line); background: #fff; color: var(--azul); border-radius: 11px; font-weight: 700; font-size: .82rem; cursor: pointer; }
         .btn-qr:hover { border-color: var(--azul); background: #EEF4FB; }
         .modal-qr { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(11,37,69,.62); }
@@ -143,6 +146,7 @@
         .lg-error { min-height: 18px; margin-bottom: 8px; color: #C62F2A; font-size: .85rem; font-weight: 600; }
         /* ================= CELULAR / PANTALLA ESTRECHA ================= */
         @media (max-width: 860px) {
+            .btn-salir { display: inline-flex; }
             #vista-registro { grid-template-columns: 1fr; }
             .reg-izq { min-height: 0; padding: 36px 20px 44px; }
             .heroe-marca, .heroe-marca svg { width: 104px; height: 104px; } .heroe-marca { margin-bottom: 24px; }
@@ -237,11 +241,12 @@
 <div><strong>Fischer</strong><span>MSA Studio</span></div></div>
             <nav class="lat-nav"><div class="lat-sec">Herramientas</div><div id="pt-nav"></div></nav>
             <div class="lat-usuario"><div class="avatar" id="pt-avatar"></div><div class="lu-txt"><b id="pt-nombre"></b><span id="pt-usuario"></span></div></div>
-            <a href="#" class="lat-cambiar" onclick="cambiarUsuario(); return false;">Cambiar usuario</a>
+            <a href="#" class="lat-cambiar" onclick="cambiarUsuario(); return false;">Cerrar sesión</a>
         </aside>
         <main class="principal">
             <div class="fila-cab"><div class="eyebrow">Inicio</div>
-                <button class="btn-qr" onclick="verQR()"><svg class="ico" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3z"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h3M20 17v4"/></svg>Código QR</button></div>
+                <div class="fila-btns"><button class="btn-qr" onclick="verQR()"><svg class="ico" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3z"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h3M20 17v4"/></svg>Código QR</button>
+                <button class="btn-qr btn-salir" onclick="cambiarUsuario()"><svg class="ico" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Cerrar sesión</button></div></div>
             <h1 class="saludo">Hola, <b id="pt-saludo"></b></h1>
             <p class="saludo-sub">¿Qué estudio de medición vamos a realizar hoy?</p>
             <section class="destacado">
