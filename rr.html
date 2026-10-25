@@ -32,6 +32,7 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif; }
         body { background: var(--bg-piso); color: var(--text-main); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
         .hidden { display: none !important; }
         .container { width: 100%; max-width: 560px; margin: 0 auto; padding: 18px 14px 40px; }
 
@@ -288,9 +289,52 @@
         .tu-linea { display: flex; gap: 6px; justify-content: flex-end; align-items: center; font-size: .78rem; font-weight: 700; color: var(--ink); }
         .tu-linea .ico { width: 15px; height: 15px; }
         .tu-links { display: flex; gap: 14px; justify-content: flex-end; font-size: .7rem; margin-top: 2px; }
-        .tu-links a { color: var(--primary-color); text-decoration: none; font-weight: 700; }
+        .tu-links a { color: var(--primary-color); text-decoration: none; font-weight: 700; white-space: nowrap; }
+        .topbar-user { min-width: 0; } .tu-linea { min-width: 0; } .tu-linea span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        @media (max-width: 420px) { .topbar-in { gap: 8px; padding: 8px 10px; } .topbar img { height: 30px; } .tu-links { gap: 10px; font-size: .66rem; } .tu-linea { font-size: .72rem; } }
+        .graficas.rejilla { grid-template-columns: repeat(auto-fit, minmax(min(310px, 100%), 1fr)); }
+        .rpt-scroll { overflow-x: auto; }
+        @media (max-width: 640px) {
+            .modal-fondo { padding: 6px; }
+            .modal-caja, .modal-caja.modal-xl { padding: 12px; border-radius: 14px; max-height: 98vh; }
+            .res-cab-tit { font-size: 1.15rem; }
+            .rpt-hoja { padding: 10px; font-size: .8rem; }
+            .rpt-tabla, .rpt-tabla > thead, .rpt-tabla > tbody, .rpt-tabla > tfoot, .rpt-tabla > thead > tr, .rpt-tabla > tbody > tr, .rpt-tabla > tfoot > tr, .rpt-tabla > thead > tr > td, .rpt-tabla > tbody > tr > td, .rpt-tabla > tfoot > tr > td { display: block; width: 100%; }
+            .rpt-tabla { display: flex; flex-direction: column; }
+            .rpt-tabla > thead { order: 1; } .rpt-tabla > tbody { order: 2; } .rpt-tabla > tfoot { order: 3; }
+            .rpt-cab { flex-wrap: wrap; gap: 8px 12px; }
+            .rpt-cab img { height: 30px; }
+            .rpt-cab-tit { flex: 1 1 100%; order: 3; }
+            .rpt-ctl { width: 100%; order: 4; } .rpt-ctl td { min-width: 0; }
+            .rpt-kv th { width: 40%; } .rpt-kv th, .rpt-kv td { word-break: break-word; }
+            .rpt-firmas { grid-template-columns: 1fr; }
+            .rpt-pie { flex-direction: column; gap: 2px; }
+            .rpt-datos { font-size: .62rem; } .rpt-datos th, .rpt-datos td { padding: 2px 3px; }
+            .tbl { font-size: .72rem; } .tbl td, .tbl th { padding: 6px 7px; }
+            .veredicto { font-size: .92rem; padding: 12px; }
+            .modal-pie .btn-action, .modal-pie .btn-action:first-child { flex: 1 1 100%; }
+        }
+        @media print {
+            body.imp-res .tbl, body.imp-rep .tbl { font-size: 8pt; }
+            body.imp-res .tbl th, body.imp-res .tbl td, body.imp-rep .tbl th, body.imp-rep .tbl td { padding: 5px 5px; }
+            body.imp-res .tbl th, body.imp-rep .tbl th { white-space: normal; letter-spacing: 0; vertical-align: bottom; }
+        }
+        .tabs-modulo { display: flex; gap: 6px; margin: 0 0 14px; padding: 5px; background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+        .tab { flex: 1; padding: 11px 8px; border: none; border-radius: 10px; background: transparent; color: var(--text-muted); font-weight: 700; font-size: .9rem; cursor: pointer; }
+        .tab.activo { background: var(--primary-color); color: #fff; }
+        .tab .n { margin-left: 7px; padding: 1px 8px; border-radius: 99px; font-size: .72rem; background: rgba(0,0,0,.14); }
+        .rp-item { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+        .rp-info { flex: 1 1 200px; min-width: 0; word-break: break-word; } .rp-info strong { font-size: 1rem; color: var(--ink); }
+        .rp-info small { display: block; margin-top: 3px; color: var(--text-muted); font-size: .76rem; line-height: 1.4; }
+        .rp-btns { display: flex; gap: 8px; } .rp-btns button { padding: 8px 14px; border-radius: 9px; border: 1.5px solid var(--border-ui); background: #fff; color: var(--primary-color); font-weight: 700; font-size: .8rem; cursor: pointer; }
+        .rp-btns .rp-del { color: var(--danger-color); }
+        .rp-vacio { padding: 26px 10px; text-align: center; color: var(--text-muted); font-size: .9rem; }
+        .rp-barra { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center; }
+        .rp-barra select { flex: 1 1 180px; width: auto; } .rp-barra .btn-action { margin-top: 0; width: auto; flex: 1 1 180px; min-height: 46px; }
+        .rep-aviso { flex: 1 0 100%; font-size: .8rem; font-weight: 700; color: var(--success-color); }
         .pie { text-align: center; font-size: .68rem; color: var(--text-muted); letter-spacing: .06em; margin-top: 8px; }
 </style>
+    <script src="usuarios.js"></script>
 </head>
 <body>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -318,7 +362,11 @@
     </header>
 
     <div class="container">
-
+        <nav class="tabs-modulo">
+            <button id="tab-estudio" class="tab activo" onclick="mostrarVista('estudio')">Nuevo estudio</button>
+            <button id="tab-reportes" class="tab" onclick="mostrarVista('reportes')">Mis reportes<span class="n" id="tab-n">0</span></button>
+        </nav>
+        <div id="vista-estudio">
         <div id="pantalla-config">
             <section class="hero">
                 <h1>R&amp;R</h1>
@@ -329,8 +377,12 @@
             <div class="card">
                 <div class="card-title"><span class="paso">1</span>Identificación del estudio</div>
                 <div class="form-group">
-                    <label>Equipo o dispositivo de medición</label>
+                    <label>Código del equipo</label>
                     <input type="text" id="cfg-equipo" placeholder="" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="form-group">
+                    <label>Descripción del instrumento</label>
+                    <input type="text" id="cfg-descripcion" placeholder="" autocomplete="off" style="text-transform: none;">
                 </div>
                 <div class="form-group">
                     <label>Administrador (VISA)</label>
@@ -472,6 +524,20 @@
                 <svg class="ico"><use href="#i-restart"/></svg><span><strong>Reiniciar estudio</strong><small>Elimina los datos y comienza uno nuevo</small></span></button>
         </div>
 
+        </div>
+        <div id="vista-reportes" class="hidden">
+            <div class="card">
+                <div class="card-title" id="rp-titulo">Mis reportes</div>
+                <p class="ayuda" id="rp-ayuda"></p>
+                <div id="rp-admin" class="rp-barra hidden">
+                    <select id="rp-filtro" onchange="renderReportes()"></select>
+                    <button class="btn-action btn-outline" onclick="$('archivo-reportes').click()"><svg class="ico"><use href="#i-upload"/></svg>Importar reportes</button>
+                </div>
+                <div id="rp-lista"></div>
+                <button class="btn-action btn-outline" onclick="exportarMisReportes()"><svg class="ico"><use href="#i-save"/></svg>Exportar reportes (archivo)</button>
+                <input type="file" id="archivo-reportes" accept=".json,application/json" multiple style="display:none" onchange="importarReportes(this)">
+            </div>
+        </div>
         <div class="pie">FISCHER MSA STUDIO · CALIDAD · FISCHER S.A. DE C.V.</div>
     </div>
 
@@ -503,8 +569,9 @@
         <div class="modal-caja modal-xl">
             <div class="rpt-hoja" id="rep-contenido"></div>
             <div class="modal-pie no-print">
+                <span id="rep-aviso" class="rep-aviso"></span>
                 <button class="btn-action" onclick="guardarReportePDF()"><svg class="ico"><use href="#i-file"/></svg>Guardar reporte (PDF)</button>
-                <button class="btn-action btn-outline" onclick="editarDatosReporte()">Editar datos</button>
+                <button id="btn-editar-rep" class="btn-action btn-outline" onclick="editarDatosReporte()">Editar datos</button>
                 <button class="btn-action btn-outline" onclick="cerrarReporte()">Cerrar</button>
             </div>
         </div>
@@ -602,13 +669,16 @@
 
         function validarEIniciar() {
             const equipo = $('cfg-equipo').value.trim().toUpperCase();
+            const descripcion = $('cfg-descripcion').value.trim().replace(/\s+/g, ' ');
             const visa = $('cfg-visa').value.trim().toUpperCase();
             const numOps = parseInt($('cfg-num-ops').value);
             const muestra = parseInt($('cfg-muestra').value);
             const ensayos = 3;
             const tipo = $('cfg-tipo').value;
 
-            if (!equipo || !visa) { alert("Complete los datos requeridos: Equipo y VISA del Administrador."); return; }
+            if (!equipo) { alert("Capture el código del equipo (por ejemplo: QS157)."); return; }
+            if (!descripcion) { alert("Capture la descripción del instrumento (por ejemplo: Flexómetro)."); return; }
+            if (!visa) { alert("Capture la VISA del administrador."); return; }
             if (!muestra || muestra <= 0) { alert("La cantidad de muestras debe ser un entero mayor a cero."); return; }
             if (isNaN(numOps) || numOps < 2) { alert("Un estudio R&R requiere al menos 2 operadores (lo habitual son 3)."); return; }
 
@@ -628,7 +698,7 @@
                 k = Number($('cfg-k').value); alfa = Number($('cfg-alfa').value);
             }
             listaInspectores = ops;
-            configuracion = { equipo, tipo, muestra, ensayos, visa, inspectores: ops, lsl, usl, k, alfa, planta: $('cfg-planta').value || '' };
+            configuracion = { equipo, tipo, muestra, ensayos, visa, inspectores: ops, lsl, usl, k, alfa, planta: $('cfg-planta').value || '', descripcion, propietario: (usuarioActual() || {}).usuario || '' };
             $('pantalla-config').classList.add('hidden');
 
             if (tipo === "Atributos") {
@@ -699,7 +769,7 @@
         }
 
         function inicializarInterfazCaptura() {
-            $('txt-info-estudio').innerText = `Equipo: ${configuracion.equipo} | Administrador: ${configuracion.visa}`;
+            $('txt-info-estudio').innerText = `Equipo: ${etiquetaEquipo()} | Administrador: ${configuracion.visa}${textoPropietario()}`;
             llenarSelectores();
         }
 
@@ -1043,7 +1113,7 @@
         function descargarRespaldo() {
             if (!registros.length) { alert("No hay datos para respaldar."); return; }
             const cfg = [
-                { CAMPO: "Equipo", VALOR: configuracion.equipo },
+                { CAMPO: "Equipo", VALOR: configuracion.equipo }, { CAMPO: "Descripción del instrumento", VALOR: configuracion.descripcion || "" },
                 { CAMPO: "Tipo de estudio", VALOR: configuracion.tipo },
                 { CAMPO: "Administrador", VALOR: configuracion.visa },
                 { CAMPO: "Nº de piezas", VALOR: configuracion.muestra },
@@ -1131,6 +1201,7 @@
                     const filasCfg = XLSX.utils.sheet_to_json(wb.Sheets['Configuracion']);
                     const g = c => { const f = filasCfg.find(r => r.CAMPO === c); return f ? f.VALOR : undefined; };
                     const equipo = String(g('Equipo') || '').trim().toUpperCase();
+                    const descripcion = String(g('Descripción del instrumento') || '').trim();
                     const visa = String(g('Administrador') || '').trim().toUpperCase();
                     const tipo = g('Tipo de estudio');
                     const muestra = Number(g('Nº de piezas'));
@@ -1180,7 +1251,7 @@
 
                     // Todo validado: ahora sí se reemplaza el estudio actual
                     listaInspectores = ops;
-                    configuracion = { equipo, tipo, muestra, ensayos, visa, inspectores: ops, lsl: lslR, usl: uslR, k: kR, alfa: alfaR, planta: String(g('Planta') || '') };
+                    configuracion = { equipo, tipo, muestra, ensayos, visa, inspectores: ops, lsl: lslR, usl: uslR, k: kR, alfa: alfaR, planta: String(g('Planta') || ''), descripcion, propietario: (usuarioActual() || {}).usuario || '' };
                     registros = regs;
                     mapaEstandar = est;
                     piezaEnEdicion = null;
@@ -1340,7 +1411,7 @@
             const peor = [nivel(T.efect, 90, 80, true), nivel(T.omision, 2, 5, false), nivel(T.falsa, 5, 10, false)].sort((a, b) => orden[b] - orden[a])[0];
             const txtV = { ok: '✅ SISTEMA DE MEDICIÓN ACEPTABLE (criterios AIAG)', mar: '⚠️ MARGINAL: puede ser aceptable según la aplicación y el costo', mal: '❌ NO ACEPTABLE: requiere mejora' }[peor];
 
-            let h = `<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">${esc(configuracion.equipo)} · ${D.n} piezas (${R.nokParts} NOK / ${R.okParts} OK) · ${D.ops.length} evaluadores · ${D.m} ensayos · confianza 95 %</p>`;
+            let h = `<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">${esc(etiquetaEquipo())} · ${D.n} piezas (${R.nokParts} NOK / ${R.okParts} OK) · ${D.ops.length} evaluadores · ${D.m} ensayos · confianza 95 %</p>`;
             h += '<!--VERED-->' + `<div class="veredicto ${peor}">${txtV}</div>` + '<!--FINVERED-->';
             h += `<h3 class="res-h">Indicadores AIAG (por decisión individual)</h3>` + htmlTabla(['Evaluador', 'Efectividad', 'Omisión (NOK→OK)', 'Falsa alarma (OK→NOK)'], R.aiag.map(aiagFila).concat([aiagFila(T)]));
             h += `<p class="res-nota">Criterios: efectividad ≥90 % aceptable (80–90 % marginal); omisión ≤2 % (≤5 % marginal); falsa alarma ≤5 % (≤10 % marginal). Se calculan sobre cada decisión, a diferencia del % por pieza de Minitab.</p>`;
@@ -1359,7 +1430,7 @@
         }
         function fijarTituloResultados(sub) {
             $('res-titulo').textContent = 'Resultado R&R ' + configuracion.equipo;
-            $('res-subtitulo').textContent = sub;
+            $('res-subtitulo').textContent = (configuracion.descripcion ? configuracion.descripcion + ' · ' : '') + sub;
         }
 
         function llenarEncabezadoImpresion() {
@@ -1612,7 +1683,7 @@
             const txtV = { ok: '✅ SISTEMA DE MEDICIÓN ACEPTABLE (criterios AIAG)', mar: '⚠️ CONDICIONALMENTE ACEPTABLE: depende de la aplicación y del costo', mal: '❌ NO ACEPTABLE: requiere mejora' }[peor];
             const pl = (v, nv, suf) => `<span class="pill ${nv}">${v.toFixed(2)}${suf}</span>`;
 
-            let h = `<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">${esc(configuracion.equipo)} · ${nP} piezas · ${ops.length} operadores · ${nE} ensayos · ANOVA · variación del estudio = ${k} DE · alfa interacción = ${alfa}${R.tol ? ` · tolerancia = ${R.tol.toFixed(4).replace(/\.?0+$/, '')} (LSL ${configuracion.lsl}, USL ${configuracion.usl})` : ' · sin tolerancia'}</p>`;
+            let h = `<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">${esc(etiquetaEquipo())} · ${nP} piezas · ${ops.length} operadores · ${nE} ensayos · ANOVA · variación del estudio = ${k} DE · alfa interacción = ${alfa}${R.tol ? ` · tolerancia = ${R.tol.toFixed(4).replace(/\.?0+$/, '')} (LSL ${configuracion.lsl}, USL ${configuracion.usl})` : ' · sin tolerancia'}</p>`;
             h += '<!--VERED-->' + `<div class="veredicto ${peor}">${txtV}</div>` + '<!--FINVERED-->';
             const ind = [['%GRR (variación del estudio)', pl(grr.pctSV, nvSV, ' %'), '< 10 % aceptable · 10–30 % condicional · > 30 % no aceptable']];
             if (R.tol) ind.push(['%GRR (tolerancia)', pl(grr.pctTol, nvTol, ' %'), 'mismos límites']);
@@ -1724,7 +1795,7 @@
             $('modal-datos-reporte').classList.remove('hidden');
         }
         function cerrarDatosReporte() { $('modal-datos-reporte').classList.add('hidden'); }
-        function cerrarReporte() { $('modal-reporte').classList.add('hidden'); }
+        function cerrarReporte() { $('modal-reporte').classList.add('hidden'); restaurarContexto(); $('rep-aviso').textContent = ''; }
         function editarDatosReporte() { cerrarReporte(); abrirDatosReporte(); }
 
         function generarReporte() {
@@ -1733,6 +1804,8 @@
             const r = configuracion.tipo === 'Variables' ? verResultadosVariables(true) : verResultados(true);
             if (!r) return;
             $('rep-contenido').innerHTML = construirReporteHTML(r, f);
+            const estado = guardarReporteActual(r, f);
+            $('rep-aviso').textContent = estado === 'nuevo' ? '✓ Reporte guardado en "Mis reportes"' : (estado === 'actualizado' ? '✓ Reporte actualizado en "Mis reportes"' : '');
             $('modal-datos-reporte').classList.add('hidden');
             $('modal-reporte').classList.remove('hidden');
         }
@@ -1753,13 +1826,26 @@
             { nombre: 'Apaseo el Grande, Gto', normas: ['FSSC 22000', 'ISO 9001'] },
             { nombre: 'Salinas Victoria, NL', normas: ['ISO 9001'] }
         ];
-        function usuarioActual() {
-            try { const u = JSON.parse(localStorage.getItem('msa_usuario')); return (u && u.nombre && u.usuario) ? u : null; } catch (e) { return null; }
+        function textoPropietario() {
+            const u = usuarioActual(), p = configuracion.propietario;
+            if (!p || !u || p === u.usuario) return '';
+            const d = (typeof USUARIOS !== 'undefined') ? USUARIOS.find(x => x.visa === p) : null;
+            return ` | Estudio iniciado por: ${d ? d.nombre : p} (${p})`;
         }
+        function etiquetaEquipo() { const c = configuracion; return c.descripcion ? `${c.equipo} (${c.descripcion})` : c.equipo; }
+        function usuarioActual() {
+            try {
+                const u = JSON.parse(localStorage.getItem('msa_usuario'));
+                if (!(u && u.nombre && u.usuario)) return null;
+                if (typeof USUARIOS !== 'undefined') { const d = USUARIOS.find(x => x.visa === u.usuario); return d ? { nombre: d.nombre, usuario: d.visa, admin: !!(d.admin && u.admin) } : null; }
+                return { nombre: u.nombre, usuario: u.usuario, admin: !!u.admin };
+            } catch (e) { return null; }
+        }
+        function esAdmin() { const u = usuarioActual(); return !!(u && u.admin); }
         function cambiarUsuario() { localStorage.removeItem('msa_usuario'); location.href = 'index.html'; }
         function llenarUsuario() {
             const u = usuarioActual();
-            $('usuario-actual').textContent = u ? `${u.nombre} (${u.usuario})` : '';
+            $('usuario-actual').textContent = u ? `${u.nombre} (${u.usuario})${u.admin ? ' · ADMIN' : ''}` : '';
             $('btn-cambiar-usuario').classList.toggle('hidden', !u);
             if (u && !$('cfg-visa').value) $('cfg-visa').value = u.usuario;
             $('cfg-planta').innerHTML = '<option value="">(sin especificar)</option>' + PLANTAS.map(p => `<option value="${esc(p.nombre)}">${esc(p.nombre)}</option>`).join('');
@@ -1781,12 +1867,12 @@
             const R = r.R, c = configuracion, cls = nivTxt[r.peor];
             if (c.tipo === 'Variables') {
                 const g = R.comp[0], rep = R.comp[1], rpr = R.comp[2];
-                let t = `El estudio Gage R&R (ANOVA cruzado) del equipo ${c.equipo}, con ${R.P} piezas, ${R.O} operadores y ${R.r} ensayos, arrojó un %GRR de ${g.pctSV.toFixed(2)} % respecto de la variación del estudio` + (R.tol ? ` y de ${g.pctTol.toFixed(2)} % respecto de la tolerancia` : '') + `, con un ndc de ${R.ndc}. Conforme a los criterios de AIAG MSA 4.ª ed., el sistema de medición se clasifica como ${cls}.`;
+                let t = `El estudio Gage R&R (ANOVA cruzado) del equipo ${etiquetaEquipo()}, con ${R.P} piezas, ${R.O} operadores y ${R.r} ensayos, arrojó un %GRR de ${g.pctSV.toFixed(2)} % respecto de la variación del estudio` + (R.tol ? ` y de ${g.pctTol.toFixed(2)} % respecto de la tolerancia` : '') + `, con un ndc de ${R.ndc}. Conforme a los criterios de AIAG MSA 4.ª ed., el sistema de medición se clasifica como ${cls}.`;
                 if (r.peor !== 'ok') t += ` La mayor parte de la variación del sistema de medición proviene de la ${rep.var >= rpr.var ? 'repetibilidad (equipo)' : 'reproducibilidad (operador)'}.`;
                 return t;
             }
             const T = R.aiagTotal, k = R.allStd.k;
-            return `El estudio de concordancia de atributos del equipo ${c.equipo}, con ${R.n} piezas (${R.nokParts} NOK y ${R.okParts} OK), ${R.within.length} evaluadores y ${R.m} ensayos, arrojó una efectividad total de ${T.efect.toFixed(1)} %, una tasa de omisión de ${T.omision.toFixed(1)} % y una tasa de falsa alarma de ${T.falsa.toFixed(1)} %` + (k === null ? '' : `; Kappa de todos los evaluadores contra el estándar = ${k.toFixed(4)}`) + `. Conforme a los criterios de AIAG MSA 4.ª ed., el sistema de medición se clasifica como ${cls}.` + (T.omision > 2 ? ' La tasa de omisión (piezas NOK aceptadas como OK) es el indicador crítico para la liberación de producto.' : '');
+            return `El estudio de concordancia de atributos del equipo ${etiquetaEquipo()}, con ${R.n} piezas (${R.nokParts} NOK y ${R.okParts} OK), ${R.within.length} evaluadores y ${R.m} ensayos, arrojó una efectividad total de ${T.efect.toFixed(1)} %, una tasa de omisión de ${T.omision.toFixed(1)} % y una tasa de falsa alarma de ${T.falsa.toFixed(1)} %` + (k === null ? '' : `; Kappa de todos los evaluadores contra el estándar = ${k.toFixed(4)}`) + `. Conforme a los criterios de AIAG MSA 4.ª ed., el sistema de medición se clasifica como ${cls}.` + (T.omision > 2 ? ' La tasa de omisión (piezas NOK aceptadas como OK) es el indicador crítico para la liberación de producto.' : '');
         }
 
         function tablaDatosReporte() {
@@ -1812,10 +1898,10 @@
 
         function fmtFechaCorta(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }); }
 
-        function construirReporteHTML(r, f) {
+        function construirReporteHTML(r, f, emision) {
             const c = configuracion, attr = c.tipo === 'Atributos', R = r.R, ops = todosOperadores();
             const partes = r.h.split('<!--VERED-->'), info = partes[0], pp = partes[1].split('<!--FINVERED-->'), vered = pp[0], resto = pp[1];
-            const hoy = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+            const hoy = (emision ? new Date(emision) : new Date()).toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
             const campo = v => v ? esc(v) : '<span class="linea"></span>';
             const kv = (k, v) => `<tr><th>${k}</th><td>${campo(v)}</td></tr>`;
             const caja = v => `<div class="rpt-texto">${esc(v || '')}</div>`;
@@ -1845,7 +1931,7 @@
             const pie = `<div class="rpt-pie"><span>Fischer MSA Studio v${VERSION_APP} · Folio ${esc(folio)} · Huella ${corta}</span><span>Documento generado el ${hoy}</span></div>`;
 
             const s1 = `<div class="rpt-sec"><h2 class="rpt-h">1. Identificación del estudio</h2><table class="rpt-kv">` +
-                kv('Equipo / dispositivo de medición', c.equipo) + kv('Planta', c.planta) + kv('Característica medida', f.caracteristica) + kv('Especificación', espec) + kv('Unidad de medida', f.unidad) + kv('Resolución del instrumento', f.resolucion) +
+                kv('Código del equipo', c.equipo) + kv('Descripción del instrumento', c.descripcion) + kv('Planta', c.planta) + kv('Característica medida', f.caracteristica) + kv('Especificación', espec) + kv('Unidad de medida', f.unidad) + kv('Resolución del instrumento', f.resolucion) +
                 kv('Nº de parte / cliente', f.parte) + kv('Calibración vigente (ID y fecha)', f.calibracion) + kv('Tipo de estudio', attr ? 'Atributos (OK / NOK): concordancia contra master' : 'Variables: Gage R&R cruzado (ANOVA)') +
                 kv('Responsable del estudio (VISA)', c.visa) + kv('Periodo de captura', periodo) + kv('Operadores', ops.join(', ')) + kv('Piezas · ensayos · registros', `${c.muestra} piezas · ${c.ensayos} ensayos · ${registros.length} registros`) + `</table></div>`;
             const s2 = `<div class="rpt-sec"><h2 class="rpt-h">2. Resumen ejecutivo</h2>${vered}${htmlTabla(['Indicador', 'Resultado', 'Criterio AIAG'], resumen)}</div>`;
@@ -1855,7 +1941,7 @@
                 `<h3 class="rpt-h2">Referencias normativas</h3><ul class="rpt-lista"><li>AIAG. Measurement Systems Analysis (MSA), Reference Manual, 4.ª edición (2010).</li>${refNormasHTML(c.planta)}<li>Requisitos específicos del cliente aplicables, cuando existan.</li><li>Procedimiento interno del SGC: <span class="linea" style="display:inline-block;min-width:200px;"></span></li></ul>` +
                 `<h3 class="rpt-h2">Observaciones del estudio</h3>${caja(f.observaciones)}</div>`;
             const s4 = `<div class="rpt-sec rpt-salto"><h2 class="rpt-h">4. Resultados del estudio</h2>${info}${resto}</div>`;
-            const s5 = `<div class="rpt-sec rpt-salto"><h2 class="rpt-h">5. Datos del estudio y trazabilidad</h2>${tablaDatosReporte()}` +
+            const s5 = `<div class="rpt-sec rpt-salto"><h2 class="rpt-h">5. Datos del estudio y trazabilidad</h2><div class="rpt-scroll">${tablaDatosReporte()}</div>` +
                 (attr ? '<p class="rpt-aviso">Las celdas en rojo indican respuestas que difieren del estándar.</p>' : '') +
                 `<h3 class="rpt-h2">Huella de integridad de los datos (SHA-256)</h3><div class="rpt-hash">${hash}</div>` +
                 `<p class="rpt-aviso">Calculada sobre el tipo de estudio, equipo, piezas, ensayos y todos los registros ordenados (operador | ensayo | pieza | resultado)${attr ? ' más el estándar' : ''}. Permite comprobar que el respaldo de datos archivado corresponde a este reporte. Fischer MSA Studio v${VERSION_APP}; cálculos verificados contra Minitab con estudios de referencia.</p></div>`;
@@ -1868,6 +1954,119 @@
 
             return `<table class="rpt-tabla"><thead><tr><td>${cab}</td></tr></thead><tfoot><tr><td>${pie}</td></tr></tfoot><tbody><tr><td>${s1}${s2}${s3}${s4}${s5}${s6}</td></tr></tbody></table>`;
         }
+
+        /* ================= MIS REPORTES (por usuario; se guardan en este dispositivo) ================= */
+        const CLAVE_REPORTES = 'ryr_reportes';
+        let _ctxPrevio = null;
+        function reportesLeer() { const l = leerDatos(CLAVE_REPORTES, []); return Array.isArray(l) ? l : []; }
+        function reportesGuardar(l) { guardarDatos(CLAVE_REPORTES, l); }
+        function nombreNivel(n) { return { ok: 'Aceptable', mar: 'Condicional', mal: 'No aceptable' }[n] || ''; }
+
+        function guardarReporteActual(r, f) {
+            const u = usuarioActual(); if (!u) return null;
+            const id = huellaEstudio().slice(0, 16), ahora = new Date().toISOString(), lista = reportesLeer();
+            const snap = { cfg: JSON.parse(JSON.stringify(configuracion)), reg: registros.map(x => [x.Inspector, x.Ensayo, x.Pieza, x.Resultado, x.Orden || 0, x.Fecha || '']), std: mapaEstandar };
+            const i = lista.findIndex(x => x.id === id && x.usuario === u.usuario);
+            const rec = { id, usuario: u.usuario, nombreUsuario: u.nombre, creado: i >= 0 ? lista[i].creado : ahora, actualizado: ahora, equipo: configuracion.equipo, descripcion: configuracion.descripcion || '', tipo: configuracion.tipo, planta: configuracion.planta || '', nivel: r.peor, snap, campos: f };
+            if (i >= 0) lista[i] = rec; else lista.push(rec);
+            reportesGuardar(lista); actualizarPestanas(); return i >= 0 ? 'actualizado' : 'nuevo';
+        }
+
+        function restaurarContexto() {
+            if (_ctxPrevio) { ({ configuracion, registros, mapaEstandar, listaInspectores } = _ctxPrevio); _ctxPrevio = null; }
+            $('btn-editar-rep').classList.remove('hidden');
+        }
+
+        function abrirReporteGuardado(clave) {
+            const rec = reportesLeer().find(x => x.usuario + '|' + x.id === clave); if (!rec) return;
+            _ctxPrevio = { configuracion, registros, mapaEstandar, listaInspectores };
+            configuracion = rec.snap.cfg; mapaEstandar = rec.snap.std || {}; listaInspectores = configuracion.inspectores || [];
+            registros = rec.snap.reg.map((a, i) => ({ Equipo: configuracion.equipo, Tipo_Estudio: configuracion.tipo, Visa: configuracion.visa, Inspector: a[0], Ensayo: a[1], Pieza: a[2], Resultado: a[3], Orden: a[4] || i + 1, Fecha: a[5] || '' }));
+            const r = configuracion.tipo === 'Variables' ? verResultadosVariables(true) : verResultados(true);
+            if (!r) { restaurarContexto(); alert('No se pudo reconstruir este reporte.'); return; }
+            $('rep-contenido').innerHTML = construirReporteHTML(r, rec.campos || {}, rec.actualizado);
+            $('rep-aviso').textContent = `Reporte guardado de ${rec.nombreUsuario} (${rec.usuario})`; $('btn-editar-rep').classList.add('hidden');
+            $('modal-reporte').classList.remove('hidden');
+        }
+
+        function eliminarReporte(clave) {
+            const u = usuarioActual(), lista = reportesLeer(), rec = lista.find(x => x.usuario + '|' + x.id === clave);
+            if (!u || !rec || !(u.admin || rec.usuario === u.usuario)) return;
+            if (!confirm(`¿Eliminar el reporte de ${rec.equipo}${rec.descripcion ? ' (' + rec.descripcion + ')' : ''}?\n\nEsta acción no se puede deshacer en este dispositivo.`)) return;
+            reportesGuardar(lista.filter(x => x !== rec)); renderReportes(); actualizarPestanas();
+        }
+
+        function visibles() { const u = usuarioActual(); if (!u) return []; return reportesLeer().filter(x => u.admin || x.usuario === u.usuario); }
+        function actualizarPestanas() { $('tab-n').textContent = visibles().length; }
+
+        function renderReportes() {
+            const u = usuarioActual(); if (!u) return; const admin = u.admin;
+            if (admin) {
+                const visas = [...new Set(reportesLeer().map(x => x.usuario))].sort(), sel = $('rp-filtro'), actual = sel.value;
+                sel.innerHTML = '<option value="">Todos los usuarios</option>' + visas.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join(''); sel.value = visas.includes(actual) ? actual : '';
+            }
+            $('rp-admin').classList.toggle('hidden', !admin);
+            $('rp-titulo').textContent = admin ? 'Reportes (administrador)' : 'Mis reportes';
+            $('rp-ayuda').textContent = admin ? 'Aquí ve todos los reportes guardados en este dispositivo y los que importe de otros usuarios.' : 'Aquí se guardan los reportes que genera con su usuario en este dispositivo.';
+            const filtro = admin ? $('rp-filtro').value : '';
+            const lista = visibles().filter(x => !filtro || x.usuario === filtro).sort((a, b) => String(b.actualizado).localeCompare(String(a.actualizado)));
+            $('rp-lista').innerHTML = lista.length ? lista.map(x => {
+                const k = `${x.usuario}|${x.id}`;
+                return `<div class="rp-item"><div class="rp-info"><strong>${esc(x.equipo)}</strong>${x.descripcion ? ' · ' + esc(x.descripcion) : ''}<small>${esc(x.tipo)}${x.planta ? ' · ' + esc(x.planta) : ''} · ${esc(fmtFechaCorta(x.actualizado))}${admin ? ' · ' + esc(x.nombreUsuario) + ' (' + esc(x.usuario) + ')' : ''}</small></div>` +
+                    `<span class="pill ${esc(x.nivel)}">${nombreNivel(x.nivel)}</span><div class="rp-btns"><button onclick="abrirReporteGuardado('${k}')">Abrir</button><button class="rp-del" onclick="eliminarReporte('${k}')">Eliminar</button></div></div>`;
+            }).join('') : '<div class="rp-vacio">Aún no hay reportes. Genere un reporte oficial desde un estudio y aparecerá aquí.</div>';
+        }
+
+        function mostrarVista(v) {
+            const rp = v === 'reportes';
+            $('vista-estudio').classList.toggle('hidden', rp); $('vista-reportes').classList.toggle('hidden', !rp);
+            $('tab-estudio').classList.toggle('activo', !rp); $('tab-reportes').classList.toggle('activo', rp);
+            if (rp) renderReportes(); window.scrollTo(0, 0);
+        }
+
+        function exportarMisReportes() {
+            const u = usuarioActual(); if (!u) return;
+            const lista = visibles(); if (!lista.length) { alert('No hay reportes para exportar.'); return; }
+            descargar(`Reportes_${u.usuario}_${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify({ formato: 'msa-reportes-v1', exportado: new Date().toISOString(), usuario: u.usuario, reportes: lista }), 'application/json');
+        }
+
+        function validarReporte(x) {
+            const cad = (v, max) => typeof v === 'string' && v.length <= max, ent = (v, a, b) => Number.isInteger(v) && v >= a && v <= b, num = v => v === null || v === undefined || Number.isFinite(v);
+            try {
+                if (!x || !/^[0-9a-f]{8,64}$/.test(x.id) || !/^[A-Z0-9._-]{2,20}$/.test(x.usuario) || !cad(x.nombreUsuario, 80) || !cad(x.equipo, 80) || !cad(x.descripcion || '', 120) || !cad(x.planta || '', 80) ||
+                    !['Variables', 'Atributos'].includes(x.tipo) || !['ok', 'mar', 'mal'].includes(x.nivel) || !cad(x.actualizado, 40) || !cad(x.creado, 40)) return false;
+                const c = x.snap && x.snap.cfg;
+                if (!c || c.tipo !== x.tipo || !ent(c.muestra, 1, 200) || !ent(c.ensayos, 2, 10) || !Array.isArray(c.inspectores) || c.inspectores.length < 2 || c.inspectores.length > 10 || !c.inspectores.every(v => cad(v, 20)) ||
+                    !cad(c.equipo, 80) || !cad(c.descripcion || '', 120) || !cad(c.visa || '', 20) || !cad(c.planta || '', 80) || !num(c.lsl) || !num(c.usl) || !(c.k === undefined || (Number.isFinite(c.k) && c.k > 1 && c.k < 10)) || !(c.alfa === undefined || (Number.isFinite(c.alfa) && c.alfa > 0 && c.alfa < 1))) return false;
+                if (!Array.isArray(x.snap.reg) || x.snap.reg.length < 1 || x.snap.reg.length > 5000) return false;
+                const attr = x.tipo === 'Atributos';
+                if (!x.snap.reg.every(a => Array.isArray(a) && a.length >= 4 && cad(a[0], 20) && ent(a[1], 1, c.ensayos) && ent(a[2], 1, c.muestra) && (attr ? (a[3] === 'OK' || a[3] === 'NOK') : (typeof a[3] === 'number' && isFinite(a[3]))))) return false;
+                if (attr) { const s = x.snap.std; if (!s || typeof s !== 'object') return false; for (let p = 1; p <= c.muestra; p++) if (s[p] !== 'OK' && s[p] !== 'NOK') return false; }
+                if (x.campos && (typeof x.campos !== 'object' || !Object.values(x.campos).every(v => cad(v, 3000)))) return false;
+                return true;
+            } catch (e) { return false; }
+        }
+
+        async function importarReportes(input) {
+            if (!esAdmin()) { alert('Solo el administrador puede importar reportes.'); input.value = ''; return; }
+            const archivos = [...input.files]; input.value = ''; let nuevos = 0, actualizados = 0, rechazados = 0, errores = 0;
+            const lista = reportesLeer();
+            for (const f of archivos) {
+                try {
+                    const d = JSON.parse(await f.text());
+                    if (!d || d.formato !== 'msa-reportes-v1' || !Array.isArray(d.reportes)) { errores++; continue; }
+                    d.reportes.forEach(x => {
+                        if (!validarReporte(x)) { rechazados++; return; }
+                        const i = lista.findIndex(y => y.id === x.id && y.usuario === x.usuario);
+                        if (i < 0) { lista.push(x); nuevos++; } else if (String(x.actualizado) > String(lista[i].actualizado)) { lista[i] = x; actualizados++; }
+                    });
+                } catch (e) { errores++; }
+            }
+            reportesGuardar(lista); renderReportes(); actualizarPestanas();
+            alert(`Importación terminada.\n\nNuevos: ${nuevos}\nActualizados: ${actualizados}\nRechazados por formato: ${rechazados}\nArchivos con error: ${errores}`);
+        }
+
+        actualizarPestanas();
 
         function reiniciarTodo() {
             if (confirm("¿Desea reiniciar el estudio? Se eliminarán todos los datos capturados.\n\nSi aún no genera el respaldo, cancele y use primero 'Generar respaldo'.")) {

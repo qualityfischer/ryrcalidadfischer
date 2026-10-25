@@ -1,7 +1,7 @@
 /* Fischer MSA Studio: permite abrir la aplicación sin señal después de la primera visita (requiere https).
    Para publicar una versión nueva, cambie VERSION: los equipos descargarán los archivos nuevos la próxima vez que tengan señal. */
-const VERSION = 'msa-studio-v1';
-const NUCLEO = ['./', 'index.html', 'rr.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const VERSION = 'msa-studio-v3';
+const NUCLEO = ['./', 'index.html', 'rr.html', 'usuarios.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(VERSION).then(c => c.addAll(NUCLEO)).then(() => self.skipWaiting()));

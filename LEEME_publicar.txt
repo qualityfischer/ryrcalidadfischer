@@ -1,0 +1,65 @@
+FISCHER MSA STUDIO - PAQUETE PARA PUBLICAR COMO PAGINA WEB
+===========================================================
+
+CONTENIDO (todos los archivos deben quedar juntos, en la misma carpeta)
+  index.html ............ portal (registro y herramientas)
+  rr.html ............... herramienta R&R
+  usuarios.js ........... directorio de usuarios (VISA y nombre) y huella del PIN de administrador
+  manifest.webmanifest .. permite instalarla en el celular (icono en la pantalla de inicio)
+  sw.js ................. permite abrirla sin senal despues de la primera visita (solo con https)
+  icons/ ................ iconos de la aplicacion (subir la carpeta completa)
+
+
+OPCION A - GITHUB PAGES (https; funciona desde cualquier red)
+  1. Entre al repositorio donde se publico la version anterior (o cree uno nuevo, publico).
+  2. "Add file" > "Upload files". Arrastre index.html, rr.html, usuarios.js, manifest.webmanifest, sw.js y la
+     carpeta icons. Presione "Commit changes".
+  3. "Settings" > "Pages" > "Deploy from a branch" > rama main, carpeta /(root) > "Save".
+  4. En 1 o 2 minutos aparece la direccion en esa misma pantalla:
+        https://<usuario>.github.io/<repositorio>/
+  5. Abra esa direccion, registrese, y en el portal presione "Codigo QR": el cartel se genera
+     solo, con la direccion correcta, y se imprime desde el mismo boton.
+
+  OJO: GitHub Pages gratuito es PUBLICO: cualquiera que tenga la direccion puede abrir la
+  herramienta. Los datos de los estudios NO se suben a ningun servidor: se quedan en el
+  navegador del equipo donde se capturan.
+
+  Para publicar una version nueva: suba los archivos de nuevo y, en sw.js, cambie
+  VERSION = 'msa-studio-v3' por 'msa-studio-v4' (asi los equipos descargan los cambios).
+
+
+OPCION B - RED INTERNA DE LA PLANTA (no se expone nada a internet)
+  En una PC de la planta con Python instalado, abra una terminal DENTRO de la carpeta del
+  paquete y ejecute:
+        python -m http.server 8080
+  La direccion sera http://<IP de esa PC>:8080/  (solo funciona para telefonos y tabletas
+  conectados a la red de la planta; el firewall de Windows puede pedir permiso la primera vez).
+  La PC debe permanecer encendida. Con http no se puede instalar la aplicacion ni usarla sin
+  senal, pero todo lo demas funciona igual.
+
+
+EN EL CELULAR O LA TABLETA
+  Android (Chrome): menu de tres puntos > "Instalar aplicacion" o "Agregar a pantalla de inicio".
+  iPhone / iPad (Safari): boton Compartir > "Agregar a pantalla de inicio".
+
+
+RECOMENDACIONES PARA LAS PRUEBAS EN PISO
+  - Los datos de cada estudio se guardan SOLO en el equipo donde se capturan. Use un solo
+    dispositivo por estudio y que los operadores se lo pasen para capturar.
+  - Al terminar cada sesion, presione "Generar respaldo" (Excel). En iPhone y iPad, Safari puede
+    borrar los datos de los sitios que no se usan durante 7 dias; con la aplicacion agregada a la
+    pantalla de inicio no ocurre, pero el respaldo sigue siendo la proteccion.
+  - Al terminar el estudio: "Generar archivo de datos" (para Minitab) y "Generar reporte oficial".
+  - La exportacion a Excel necesita senal la primera vez (carga una libreria). Sin senal se
+    descarga un archivo CSV con los mismos datos, que Excel y Minitab abren.
+
+
+USUARIOS Y REPORTES
+  - Quien puede entrar esta en usuarios.js (una linea por persona: VISA y nombre). Para agregar o quitar
+    personas, edite ese archivo y subalo de nuevo (y cambie VERSION en sw.js).
+  - Cada persona entra solo con su VISA. La cuenta de administrador (XE) pide ademas un PIN.
+  - "Mis reportes": cada reporte oficial que se genera se guarda solo, a nombre de quien lo genero, EN ESE
+    DISPOSITIVO. El administrador ve los de todos los usuarios que usaron ese dispositivo y puede IMPORTAR los
+    archivos que los demas exporten con "Exportar reportes (archivo)".
+  - OJO: sin un servidor compartido, los reportes de una persona no aparecen automaticamente en el equipo del
+    administrador; hay que enviarle el archivo exportado.
