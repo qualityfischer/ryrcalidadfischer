@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R&amp;R · Fischer MSA Studio</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMDAzODZBIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMUE3OENDIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9InVybCgjZykiLz4KICA8cGF0aCBkPSJNOSA0M0MxNyA0MyAyMCAxNiAzMiAxNkM0NCAxNiA0NyA0MyA1NSA0MyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjMyIiB5MT0iMTYiIHgyPSIzMiIgeTI9IjQzIiBzdHJva2U9IiM5RkQzRkYiIHN0cm9rZS13aWR0aD0iMS43IiBzdHJva2UtZGFzaGFycmF5PSIyLjYgMi42Ii8+CiAgPGNpcmNsZSBjeD0iMzIiIGN5PSIxNiIgcj0iMy41IiBmaWxsPSIjOUZEM0ZGIi8+CiAgPHBhdGggZD0iTTExIDQ5aDQyIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuNTUiIHN0cm9rZS13aWR0aD0iMS40IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTUgNDl2NE0yMy41IDQ5djNNMzIgNDl2NU00MC41IDQ5djNNNDkgNDl2NCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjg1IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0B2545">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MSA Studio">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #005CAB;       /* Azul corporativo Fischer (tomado del logotipo) */
+            --primary-dark: #00457F;
+            --primary-soft: #E7F0F9;
+            --accent-color: #005CAB;
+            --ink: #2B2D33;                 /* Gris del logotipo */
+            --success-color: #12805C;
+            --danger-color: #C62F2A;
+            --warning-color: #B7791F;
+            --bg-piso: #EDF1F6;
+            --card-bg: #FFFFFF;
+            --text-main: #22262E;
+            --text-muted: #667085;
+            --border-ui: #D3DAE5;
+            --line: #E3E8EF;
+            --radius: 14px;
+            --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 18px rgba(16,24,40,.06);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif; }
+        body { background: var(--bg-piso); color: var(--text-main); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+        .hidden { display: none !important; }
+        .container { width: 100%; max-width: 560px; margin: 0 auto; padding: 18px 14px 40px; }
+
+        /* BARRA SUPERIOR */
+        .topbar { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid var(--line); box-shadow: 0 2px 10px rgba(16,24,40,.05); }
+        .topbar-in { max-width: 560px; margin: 0 auto; padding: 9px 14px; display: flex; align-items: center; gap: 12px; }
+        .topbar img { height: 34px; width: auto; display: block; }
+        .topbar-name { margin-left: auto; text-align: right; line-height: 1.15; }
+        .topbar-name strong { display: block; color: var(--primary-color); font-size: .95rem; font-weight: 800; letter-spacing: -.01em; }
+        .topbar-name span { font-size: .62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .09em; font-weight: 600; }
+
+        /* PORTADA DE INICIO */
+        .hero { position: relative; overflow: hidden; border-radius: 18px; padding: 24px 22px 22px; margin-bottom: 14px; color: #fff; background: linear-gradient(135deg, #00457F 0%, #005CAB 60%, #1673C2 100%); box-shadow: var(--shadow); }
+        .hero::after { content: ""; position: absolute; right: -70px; top: -50px; width: 300px; height: 190px; border-radius: 50%; border: 28px solid rgba(255,255,255,.09); transform: rotate(-16deg); pointer-events: none; }
+        .hero h1 { position: relative; font-size: 1.65rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+        .hero p { position: relative; margin-top: 6px; font-size: .88rem; opacity: .92; max-width: 360px; line-height: 1.4; }
+        .hero-chips { position: relative; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+        .hero-chips span { font-size: .68rem; font-weight: 700; letter-spacing: .04em; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.25); }
+
+        /* TARJETAS */
+        .card { background: var(--card-bg); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 14px; border: 1px solid var(--line); }
+        .card-title { font-size: .76rem; font-weight: 800; color: var(--primary-color); margin-bottom: 14px; text-transform: uppercase; letter-spacing: .08em; display: flex; align-items: center; gap: 10px; }
+        .paso { width: 24px; height: 24px; border-radius: 50%; background: var(--primary-color); color: #fff; display: grid; place-items: center; font-size: .74rem; font-weight: 800; flex: none; letter-spacing: 0; }
+        .ayuda { font-size: .82rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 14px; }
+
+        .form-group { margin-bottom: 14px; }
+        label { display: block; font-weight: 700; margin-bottom: 6px; font-size: .76rem; color: #475467; letter-spacing: .02em; }
+        input, select { width: 100%; padding: 13px 14px; border: 1.5px solid var(--border-ui); border-radius: 10px; font-size: .98rem; color: var(--text-main); outline: none; background: #fff; transition: border-color .15s, box-shadow .15s; }
+        input[type=text], select#cap-inspector { text-transform: uppercase; }
+        input::placeholder { color: #98A2B3; text-transform: none; }
+        input:focus, select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(0,92,171,.14); }
+        .row { display: flex; gap: 12px; }
+
+        /* SELECTOR DE TIPO DE ESTUDIO */
+        .tipo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .tipo-op { text-align: left; background: #fff; border: 1.5px solid var(--border-ui); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
+        .tipo-op strong { display: block; font-size: .95rem; color: var(--ink); }
+        .tipo-op small { display: block; margin-top: 3px; font-size: .72rem; color: var(--text-muted); line-height: 1.3; }
+        .tipo-op.activo { border-color: var(--primary-color); background: var(--primary-soft); box-shadow: 0 0 0 3px rgba(0,92,171,.14); }
+        .tipo-op.activo strong { color: var(--primary-color); }
+
+        /* BOTONES */
+        .btn-action { width: 100%; min-height: 52px; padding: 13px 18px; border: none; border-radius: 12px; background: var(--primary-color); color: #fff; font-size: 1rem; font-weight: 700; margin-top: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 2px 0 rgba(0,0,0,.10); transition: background .15s, transform .08s; }
+        .btn-action:hover { background: var(--primary-dark); }
+        .btn-action:active { transform: translateY(1px); }
+        .btn-outline { background: #fff; color: var(--primary-color); border: 1.5px solid var(--primary-color); box-shadow: none; }
+        .btn-outline:hover { background: var(--primary-soft); }
+        .btn-verde { background: var(--success-color); }
+        .btn-verde:hover { background: #0E6A4C; }
+        .ico { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+        .btn-link-add { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; color: var(--primary-color); font-weight: 700; font-size: .78rem; margin-top: 8px; cursor: pointer; padding: 2px 0; text-transform: none; }
+        .btn-link-add .ico { width: 16px; height: 16px; }
+
+        /* BOTONES DE ACCIÓN (dos líneas) */
+        .grupo-titulo { font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); margin: 20px 0 2px; }
+        .grupo-titulo:first-child { margin-top: 0; }
+        .btn-act { width: 100%; display: flex; align-items: center; gap: 14px; text-align: left; padding: 14px 16px; border-radius: 12px; border: 1.5px solid var(--border-ui); background: #fff; margin-top: 10px; cursor: pointer; transition: all .15s; }
+        .btn-act:hover { border-color: var(--primary-color); background: var(--primary-soft); }
+        .btn-act:active { transform: translateY(1px); }
+        .btn-act .ico { width: 26px; height: 26px; color: var(--primary-color); }
+        .btn-act strong { display: block; font-size: .98rem; color: var(--ink); font-weight: 700; }
+        .btn-act small { display: block; margin-top: 2px; font-size: .74rem; color: var(--text-muted); font-weight: 500; }
+        .btn-act.primario { background: var(--primary-color); border-color: var(--primary-color); box-shadow: 0 2px 0 rgba(0,0,0,.12); }
+        .btn-act.primario:hover { background: var(--primary-dark); }
+        .btn-act.primario .ico, .btn-act.primario strong, .btn-act.primario small { color: #fff; }
+        .btn-act.primario small { opacity: .85; }
+        .btn-act.peligro { border-color: #EFB3AF; }
+        .btn-act.peligro .ico, .btn-act.peligro strong { color: var(--danger-color); }
+        .btn-act.peligro:hover { background: #FDF1F0; border-color: var(--danger-color); }
+
+        /* CAPTURA */
+        .status-box { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--primary-soft); padding: 12px 14px; border-radius: 10px; border-left: 4px solid var(--primary-color); font-size: .8rem; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
+        #txt-contador { color: var(--primary-color); white-space: nowrap; }
+        .input-pieza-gigante { font-size: 3.4rem; text-align: center; font-weight: 800; padding: 6px; height: 92px; border: 2px solid var(--primary-color); color: var(--primary-color); background: #fff; border-radius: 16px; letter-spacing: -1px; text-transform: none; box-shadow: inset 0 2px 6px rgba(0,92,171,.08); }
+        .input-pieza-gigante:focus { box-shadow: 0 0 0 5px rgba(0,92,171,.16); }
+        .input-pieza-gigante::placeholder { color: #B6C4D6; }
+        #lbl-pieza-status { text-align: center; letter-spacing: .1em; text-transform: uppercase; font-size: .72rem; margin-bottom: 8px; }
+        .input-medicion { font-size: 1.8rem; font-weight: 800; text-align: center; padding: 16px; text-transform: none; color: var(--ink); }
+        .btn-container { display: flex; gap: 12px; margin-top: 16px; }
+        .btn-captura { flex: 1; padding: 26px 10px; border: none; border-radius: 16px; font-size: 1.7rem; font-weight: 800; letter-spacing: .03em; color: #fff; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,.20); transition: transform .08s, box-shadow .08s; }
+        .btn-captura:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.20); }
+        .btn-ok { background: var(--success-color); }
+        .btn-nok { background: var(--danger-color); }
+
+        .panel-info-piso { margin-top: 14px; background: #F8FAFC; padding: 14px; border-radius: 12px; border: 1px solid var(--line); }
+        .panel-titulo { font-size: .68rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--line); padding-bottom: 8px; letter-spacing: .1em; }
+        .inspector-progreso { margin-bottom: 12px; }
+        .inspector-meta { display: flex; justify-content: space-between; font-size: .8rem; font-weight: 700; margin-bottom: 5px; color: var(--ink); }
+        .barra-gris { background: #DDE3EC; width: 100%; height: 8px; border-radius: 99px; overflow: hidden; }
+        .barra-color { background: var(--primary-color); height: 100%; width: 0%; transition: width .3s ease; border-radius: 99px; }
+        .bitacora-lista { max-height: 190px; overflow-y: auto; font-size: .85rem; }
+        .bitacora-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--line); font-weight: 600; color: var(--ink); }
+        .bitacora-acciones { display: flex; align-items: center; gap: 8px; }
+        .tag-resultado { padding: 4px 10px; border-radius: 99px; font-weight: 800; color: #fff; font-size: .74rem; text-transform: uppercase; letter-spacing: .03em; }
+        .tag-ok { background: var(--success-color); } .tag-nok { background: var(--danger-color); } .tag-var { background: var(--primary-color); }
+        .btn-editar-item { background: #E8EDF4; border: none; padding: 7px 10px; border-radius: 8px; font-size: .75rem; cursor: pointer; font-weight: 700; color: var(--text-main); }
+        .btn-editar-item:hover { background: #D5DDE9; }
+        .alerta-cambio { background: var(--primary-soft); color: var(--primary-dark); padding: 12px 14px; border-radius: 10px; text-align: center; font-size: .85rem; font-weight: 700; margin-bottom: 14px; border: 1px solid #BCD6EE; }
+        .ens-chips { display: flex; gap: 6px; margin-bottom: 6px; }
+        .ens-chip { font-size: .7rem; font-weight: 800; padding: 3px 9px; border-radius: 99px; background: #E3E8EF; color: #475467; }
+        .ens-chip.ok { background: #D6F1E6; color: #0B6446; } .ens-chip.parcial { background: #FCEBC5; color: #8A5A0E; }
+
+        /* ALINEACIÓN DEL MASTER */
+        .conteo-estandar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; font-size: .78rem; font-weight: 700; color: var(--text-muted); }
+        .chip-std { padding: 5px 12px; border-radius: 99px; font-weight: 800; font-size: .78rem; }
+        .chip-std.ok { background: #D6F1E6; color: #0B6446; } .chip-std.nok { background: #FBE0DE; color: #A32420; }
+        .tabla-estandar-scroll { max-height: 340px; overflow-y: auto; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 12px; }
+        .tabla-estandar { width: 100%; border-collapse: collapse; }
+        .tabla-estandar th { background: #F3F6FA; color: var(--text-muted); padding: 11px 14px; position: sticky; top: 0; font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .09em; border-bottom: 1px solid var(--line); text-align: left; }
+        .tabla-estandar th:last-child, .tabla-estandar td:last-child { text-align: right; }
+        .tabla-estandar td { padding: 8px 14px; border-bottom: 1px solid #EEF1F6; font-size: .92rem; }
+        .tabla-estandar tr:nth-child(even) td { background: #FAFBFD; }
+        .btn-toggle-std { padding: 9px 0; border: none; border-radius: 99px; font-weight: 800; font-size: .8rem; cursor: pointer; width: 84px; letter-spacing: .04em; transition: all .12s; }
+        .btn-toggle-std.btn-ok { background: #D6F1E6; color: #0B6446; }
+        .btn-toggle-std.btn-nok { background: #FBE0DE; color: #A32420; }
+
+        /* VENTANAS (resultados y detalle) */
+        .modal-fondo { position: fixed; inset: 0; background: rgba(16,24,40,.55); display: flex; align-items: flex-end; justify-content: center; z-index: 50; padding: 12px; }
+        @media (min-width: 700px) { .modal-fondo { align-items: center; } }
+        .modal-caja { background: #fff; width: 100%; max-width: 500px; max-height: 88vh; overflow-y: auto; border-radius: 18px; padding: 22px; box-shadow: 0 20px 50px rgba(0,0,0,.3); }
+        .modal-ancha { max-width: 800px; }
+        .rev-resumen { padding: 12px; border-radius: 10px; font-weight: 700; font-size: .9rem; text-align: center; margin-bottom: 14px; }
+        .rev-resumen.ok { background: #D6F1E6; color: #0B6446; } .rev-resumen.pend { background: var(--primary-soft); color: var(--primary-dark); }
+        .rev-op { border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+        .rev-op-titulo { font-weight: 800; color: var(--primary-color); margin-bottom: 8px; font-size: .9rem; }
+        .rev-fila { padding: 7px 0; border-top: 1px solid #EEF1F6; font-size: .85rem; }
+        .rev-fila-cab { display: flex; justify-content: space-between; font-weight: 600; }
+        .rev-ok { color: var(--success-color); } .rev-parcial { color: var(--warning-color); } .rev-vacio { color: var(--text-muted); }
+        .rev-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center; }
+        .chip-falta { border: none; background: #FBE0DE; color: #A32420; font-weight: 800; font-size: .8rem; padding: 7px 11px; border-radius: 8px; cursor: pointer; }
+        .tbl { width: 100%; border-collapse: collapse; font-size: .78rem; margin-bottom: 6px; }
+        .tbl th, .tbl td { border-bottom: 1px solid var(--line); padding: 7px 9px; text-align: right; white-space: nowrap; }
+        .tbl th:first-child, .tbl td:first-child { text-align: left; font-weight: 700; }
+        .tbl th { background: #F3F6FA; color: var(--primary-color); font-weight: 800; }
+        .res-h { font-size: .95rem; color: var(--primary-color); margin: 20px 0 8px; font-weight: 800; }
+        .res-nota { font-size: .72rem; color: var(--text-muted); margin: 4px 0 8px; line-height: 1.4; }
+        .pill, .veredicto { font-weight: 700; }
+        .pill { padding: 2px 9px; border-radius: 99px; }
+        .veredicto { padding: 13px; border-radius: 10px; text-align: center; margin: 10px 0; font-weight: 800; }
+        .pill.ok, .veredicto.ok { background: #D6F1E6; color: #0B6446; }
+        .pill.mar, .veredicto.mar { background: #FCEBC5; color: #8A5A0E; }
+        .pill.mal, .veredicto.mal { background: #FBE0DE; color: #A32420; }
+        .graficas { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+        .graficas.rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 12px; }
+        .print-only { display: none; }
+        .modal-barra { position: sticky; top: 0; z-index: 5; display: flex; gap: 10px; margin: -22px -22px 16px; padding: 12px 22px; background: #fff; border-bottom: 1px solid var(--line); border-radius: 18px 18px 0 0; }
+        .modal-barra .btn-action { margin-top: 0; min-height: 44px; font-size: .88rem; flex: 1; padding: 10px 12px; }
+        .modal-barra .btn-action:first-child { flex: 1.6; }
+        @media print {
+            @page { size: A4; margin: 14mm 12mm 16mm; }
+            body.imp-res { background: #fff; }
+            body.imp-res * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body.imp-res > *:not(#modal-resultados) { display: none !important; }
+            body.imp-res #modal-resultados { position: static !important; display: block !important; background: none; padding: 0; }
+            body.imp-res #modal-resultados .modal-caja { max-height: none; overflow: visible; box-shadow: none; max-width: none; padding: 0; border-radius: 0; }
+            body.imp-res .no-print { display: none !important; }
+            body.imp-res .print-only { display: block !important; }
+            body.imp-res .ph-fila { display: flex !important; align-items: center; gap: 14px; border-bottom: 2px solid var(--primary-color); padding-bottom: 8px; }
+            body.imp-res .ph-fila img { height: 38px; width: auto; }
+            body.imp-res .ph-txt strong { display: block; font-size: 14pt; color: var(--primary-color); }
+            body.imp-res .ph-txt span { font-size: 9.5pt; color: var(--ink); }
+            body.imp-res .ph-meta { display: flex !important; flex-wrap: wrap; gap: 6px 18px; font-size: 8.5pt; color: #475467; margin: 6px 0 12px; }
+            body.imp-res .pie-print { margin-top: 14px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 8pt; color: var(--text-muted); text-align: center; }
+            body.imp-res .tbl tr, body.imp-res .graf-item, body.imp-res .veredicto, body.imp-res .rev-op { break-inside: avoid; }
+            body.imp-res .res-h { break-after: avoid; }
+            body.imp-res .graficas.rejilla { grid-template-columns: 1fr 1fr; }
+            body.imp-res .tbl { font-size: 8.5pt; }
+        }
+        /* --- Resultados: más espacio y mejor presentación --- */
+        .modal-fondo { padding: 8px; }
+        .modal-caja.modal-xl { max-width: 1040px; width: 100%; max-height: 96vh; padding: 18px 20px; }
+        .res-cab { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 3px solid var(--primary-color); }
+        .res-cab-tit { font-size: 1.4rem; font-weight: 800; color: var(--primary-color); letter-spacing: -.01em; line-height: 1.2; }
+        .res-cab-sub { font-size: .8rem; color: var(--text-muted); margin-top: 3px; }
+        .res-h { display: flex; align-items: center; gap: 8px; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: #fff; background: var(--primary-color); padding: 8px 12px; border-radius: 8px; margin: 22px 0 10px; font-weight: 800; }
+        .tbl { border-collapse: separate; border-spacing: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: .8rem; }
+        .tbl th { font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; }
+        .tbl td, .tbl th { padding: 8px 10px; }
+        .tbl tbody tr:nth-child(even) td { background: #FAFBFD; }
+        .tbl tbody tr:last-child td { border-bottom: 0; }
+        .veredicto { font-size: 1.05rem; padding: 16px; }
+        .graficas.rejilla svg { background: #fff; border-radius: 10px; box-shadow: var(--shadow); }
+        .modal-pie { display: flex; gap: 10px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+        .modal-pie .btn-action { margin-top: 0; flex: 1; min-width: 150px; }
+        .modal-pie .btn-action:first-child { flex: 1.6; }
+        textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border-ui); border-radius: 10px; font: inherit; font-size: .95rem; resize: vertical; outline: none; }
+        textarea:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(0,92,171,.14); }
+        .rep-campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 14px; }
+        .rep-campos .completo { grid-column: 1 / -1; }
+        /* --- Reporte oficial --- */
+        .rpt-hoja { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; font-size: .84rem; color: var(--text-main); }
+        .rpt-tabla { width: 100%; border-collapse: collapse; }
+        .rpt-tabla > thead > tr > td, .rpt-tabla > tbody > tr > td, .rpt-tabla > tfoot > tr > td { padding: 0; border: 0; text-align: left; vertical-align: top; }
+        .rpt-cab { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid var(--primary-color); padding-bottom: 8px; margin-bottom: 14px; }
+        .rpt-cab img { height: 40px; width: auto; }
+        .rpt-cab-tit { flex: 1; } .rpt-cab-tit strong { display: block; font-size: 1.05rem; color: var(--primary-color); letter-spacing: .02em; }
+        .rpt-cab-tit span { font-size: .72rem; color: #475467; }
+        .rpt-ctl { border-collapse: collapse; font-size: .68rem; }
+        .rpt-ctl th { background: #F3F6FA; text-align: left; padding: 3px 8px; border: 1px solid #CBD5E1; color: #475467; font-weight: 700; }
+        .rpt-ctl td { padding: 3px 8px; border: 1px solid #CBD5E1; min-width: 96px; }
+        .rpt-pie { display: flex; justify-content: space-between; gap: 10px; font-size: .64rem; color: #667085; border-top: 1px solid #CBD5E1; padding-top: 5px; margin-top: 12px; }
+        .rpt-sec { margin-bottom: 18px; }
+        .rpt-h { font-size: .88rem; font-weight: 800; color: var(--primary-color); border-bottom: 1px solid #CBD5E1; padding-bottom: 4px; margin: 0 0 8px; text-transform: uppercase; letter-spacing: .05em; }
+        .rpt-h2 { font-size: .8rem; font-weight: 800; color: var(--ink); margin: 14px 0 6px; }
+        .rpt-p { font-size: .8rem; line-height: 1.5; margin-bottom: 4px; }
+        .rpt-lista { margin: 0 0 4px 18px; font-size: .8rem; line-height: 1.6; }
+        .rpt-kv { width: 100%; border-collapse: collapse; font-size: .8rem; }
+        .rpt-kv th { width: 32%; text-align: left; background: #F3F6FA; color: #475467; padding: 5px 8px; border: 1px solid #D9E0EA; font-weight: 700; vertical-align: top; }
+        .rpt-kv td { padding: 5px 8px; border: 1px solid #D9E0EA; }
+        .linea { display: block; min-height: 15px; border-bottom: 1px solid #98A2B3; }
+        .rpt-texto { border: 1px solid #D9E0EA; border-radius: 6px; padding: 8px 10px; min-height: 46px; white-space: pre-wrap; font-size: .8rem; line-height: 1.45; }
+        .rpt-aviso { font-size: .7rem; color: #667085; font-style: italic; margin-top: 4px; line-height: 1.4; }
+        .cbx { display: inline-block; width: 12px; height: 12px; border: 1.5px solid #334155; margin-right: 6px; vertical-align: -2px; }
+        .cbx.on { background: var(--primary-color); box-shadow: inset 0 0 0 2px #fff; }
+        .rpt-firmas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+        .rpt-firma { border: 1px solid #D9E0EA; border-radius: 6px; padding: 8px; text-align: center; font-size: .74rem; }
+        .rpt-firma .esp { height: 50px; border-bottom: 1px solid #334155; margin: 6px 8px 8px; }
+        .rpt-firma small { display: block; margin-top: 2px; color: #667085; font-size: .62rem; }
+        .rpt-datos { border-collapse: collapse; width: 100%; font-size: .7rem; }
+        .rpt-datos th, .rpt-datos td { border: 1px solid #D9E0EA; padding: 2px 5px; text-align: center; }
+        .rpt-datos th { background: #F3F6FA; color: #475467; }
+        .rpt-datos td.dif { background: #FBE0DE; color: #A32420; font-weight: 800; }
+        .rpt-hash { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .68rem; word-break: break-all; background: #F8FAFC; border: 1px solid #E3E8EF; border-radius: 6px; padding: 6px 8px; }
+        @media print {
+            @page { @bottom-right { content: "Página " counter(page) " de " counter(pages); font-size: 8pt; color: #667085; } }
+            body.imp-rep { background: #fff; }
+            body.imp-rep * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body.imp-rep > *:not(#modal-reporte) { display: none !important; }
+            body.imp-rep #modal-reporte { position: static !important; display: block !important; background: none; padding: 0; }
+            body.imp-rep #modal-reporte .modal-caja { max-height: none; overflow: visible; box-shadow: none; max-width: none; padding: 0; border-radius: 0; }
+            body.imp-rep .no-print { display: none !important; }
+            body.imp-rep .rpt-hoja { border: 0; border-radius: 0; padding: 0; }
+            body.imp-rep .rpt-tabla > thead { display: table-header-group; }
+            body.imp-rep .rpt-tabla > tfoot { display: table-footer-group; }
+            body.imp-rep .rpt-salto { break-before: page; }
+            body.imp-rep .rpt-kv tr, body.imp-rep .tbl tr, body.imp-rep .rpt-datos tr, body.imp-rep .graf-item, body.imp-rep .veredicto, body.imp-rep .rpt-firmas, body.imp-rep .rpt-texto { break-inside: avoid; }
+            body.imp-rep .rpt-h, body.imp-rep .rpt-h2, body.imp-rep .res-h { break-after: avoid; }
+            body.imp-rep .graficas.rejilla { grid-template-columns: 1fr 1fr; }
+            body.imp-rep .tbl { font-size: 8.5pt; }
+            body.imp-rep .rpt-datos { font-size: 7.5pt; }
+        }
+        .graf-item { position: relative; cursor: zoom-in; transition: transform .12s; }
+        .graf-item:hover { transform: translateY(-2px); }
+        .graf-zoom { position: absolute; top: 8px; right: 10px; font-size: .6rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--primary-color); background: var(--primary-soft); padding: 2px 8px; border-radius: 99px; }
+        .graficas:not(.rejilla) .graf-item { flex: 1 1 300px; max-width: 420px; }
+        #graf-visor svg { width: 100% !important; max-width: none !important; height: auto; max-height: 74vh; display: block; margin: 0 auto; }
+        .rep-campos label { position: relative; }
+        .info-i { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; margin-left: 6px; border-radius: 50%; background: var(--primary-soft); color: var(--primary-color); border: 1px solid #B6D0EA; font: italic 800 .7rem Georgia, serif; cursor: help; vertical-align: middle; user-select: none; outline: none; }
+        .info-i:hover, .info-i:focus, .info-i.abierto { background: var(--primary-color); color: #fff; }
+        .info-i:hover::after, .info-i:focus::after, .info-i.abierto::after { content: attr(data-tip); position: absolute; left: 0; top: calc(100% + 6px); z-index: 30; width: min(310px, 86vw); background: #1F2937; color: #fff; font: normal 500 .74rem/1.45 "Segoe UI", system-ui, sans-serif; letter-spacing: 0; text-transform: none; padding: 9px 11px; border-radius: 8px; box-shadow: 0 8px 22px rgba(0,0,0,.28); white-space: normal; }
+        .chip-fijo { font-size: .58rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: #667085; background: #EEF1F6; border-radius: 99px; padding: 1px 7px; margin-left: 6px; }
+        .campo-fijo { background: #F3F5F9 !important; color: #475467; cursor: not-allowed; }
+        .topbar-user { margin-left: auto; text-align: right; line-height: 1.3; }
+        .tu-linea { display: flex; gap: 6px; justify-content: flex-end; align-items: center; font-size: .78rem; font-weight: 700; color: var(--ink); }
+        .tu-linea .ico { width: 15px; height: 15px; }
+        .tu-links { display: flex; gap: 14px; justify-content: flex-end; font-size: .7rem; margin-top: 2px; }
+        .tu-links a { color: var(--primary-color); text-decoration: none; font-weight: 700; }
+        .pie { text-align: center; font-size: .68rem; color: var(--text-muted); letter-spacing: .06em; margin-top: 8px; }
+</style>
+</head>
+<body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></symbol>
+        <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+        <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+        <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h12l-2 4 2 4H5"/></symbol>
+        <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/></symbol>
+        <symbol id="i-restart" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></symbol>
+        <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol>
+        <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+        <symbol id="i-userplus" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.5 3.2-5.5 6.5-5.5s6 2 6.5 5.5M19 8v6M16 11h6"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol>
+        <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></symbol>
+    </svg>
+
+    <header class="topbar">
+        <div class="topbar-in">
+            <a href="index.html" title="Volver al portal"><img id="logo-marca" src="data:image/jpeg;base64,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" alt="Fischer S.A. de C.V."></a>
+            <div class="topbar-user">
+                <div class="tu-linea"><svg class="ico"><use href="#i-user"/></svg><span id="usuario-actual"></span></div>
+                <div class="tu-links"><a href="index.html">← Portal</a><a href="#" id="btn-cambiar-usuario" onclick="cambiarUsuario(); return false;">Cambiar usuario</a></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div id="pantalla-config">
+            <section class="hero">
+                <h1>R&amp;R</h1>
+                <p>Estudios R&amp;R de variables y concordancia de atributos, con criterios AIAG.</p>
+                <div class="hero-chips"><span>GAGE R&amp;R · ANOVA</span><span>CONCORDANCIA DE ATRIBUTOS</span><span>AIAG MSA 4.ª ED.</span></div>
+            </section>
+
+            <div class="card">
+                <div class="card-title"><span class="paso">1</span>Identificación del estudio</div>
+                <div class="form-group">
+                    <label>Equipo o dispositivo de medición</label>
+                    <input type="text" id="cfg-equipo" placeholder="" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="form-group">
+                    <label>Administrador (VISA)</label>
+                    <input type="text" id="cfg-visa" placeholder="" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Planta</label>
+                    <select id="cfg-planta" onchange="try { localStorage.setItem('msa_planta', this.value); } catch (e) { }"></select>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="paso">2</span>Tipo y tamaño del estudio</div>
+                <div class="tipo-grid">
+                    <button type="button" class="tipo-op activo" data-tipo="Atributos" onclick="elegirTipo('Atributos')"><strong>Atributos</strong><small>Respuesta OK / NOK</small></button>
+                    <button type="button" class="tipo-op" data-tipo="Variables" onclick="elegirTipo('Variables')"><strong>Variables</strong><small>Medición numérica</small></button>
+                </div>
+                <select id="cfg-tipo" class="hidden" onchange="toggleTipoEstudio()">
+                    <option value="Atributos">Atributos (OK / NOK)</option>
+                    <option value="Variables">Variables (Medición)</option>
+                </select>
+                <div class="row">
+                    <div class="form-group" style="flex:1; margin-bottom:0;">
+                        <label>Número de piezas</label>
+                        <input type="number" id="cfg-muestra" value="10" min="1" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    </div>
+                    <div class="form-group" style="flex:1; margin-bottom:0;">
+                        <label>Número de operadores</label>
+                        <input type="number" id="cfg-num-ops" value="3" min="2" max="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, ''); generarInputsOperadores();">
+                    </div>
+                </div>
+            </div>
+
+            <div id="cfg-bloque-variables" class="card hidden">
+                <div class="card-title"><span class="paso">+</span>Especificación y criterios (opcional)</div>
+                <p class="ayuda">Los límites permiten calcular el % de tolerancia. Déjelos en blanco si no aplican.</p>
+                <div class="row">
+                    <div class="form-group" style="flex:1;"><label>Límite inferior (LSL)</label><input type="number" id="cfg-lsl" step="any" inputmode="decimal"></div>
+                    <div class="form-group" style="flex:1;"><label>Límite superior (USL)</label><input type="number" id="cfg-usl" step="any" inputmode="decimal"></div>
+                </div>
+                <div class="form-group"><label>Multiplicador de variación del estudio</label>
+                    <select id="cfg-k"><option value="6">6 desviaciones estándar (Minitab)</option><option value="5.15">5.15 desviaciones estándar (AIAG)</option></select></div>
+                <div class="form-group" style="margin-bottom:0;"><label>Alfa para eliminar la interacción pieza × operador</label>
+                    <select id="cfg-alfa"><option value="0.05">0.05 (Minitab)</option><option value="0.25">0.25 (AIAG)</option></select></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="paso">3</span>Operadores</div>
+                <div id="seccion-visas-ops">
+                    <p class="ayuda">Capture la VISA de cada operador que participará en el estudio.</p>
+                    <div id="contenedor-operadores-inputs"></div>
+                </div>
+            </div>
+
+            <button class="btn-action" onclick="validarEIniciar()"><svg class="ico"><use href="#i-play"/></svg>Comenzar estudio</button>
+            <button class="btn-action btn-outline" onclick="$('archivo-respaldo').click()"><svg class="ico"><use href="#i-upload"/></svg>Cargar respaldo</button>
+            <input type="file" id="archivo-respaldo" accept=".xlsx" style="display:none" onchange="restaurarRespaldo(this)">
+        </div>
+
+        <div id="pantalla-estandar" class="card hidden">
+            <div class="card-title"><span class="paso">2</span>Alineación del master</div>
+            <p class="ayuda">Defina el estado de referencia (estándar) de cada pieza. Toque el estado para alternar entre OK y NOK. El estudio requiere piezas OK y NOK.</p>
+            <div id="conteo-estandar" class="conteo-estandar"></div>
+            <div class="tabla-estandar-scroll">
+                <table class="tabla-estandar">
+                    <thead><tr><th>Pieza</th><th>Estado del estándar</th></tr></thead>
+                    <tbody id="cuerpo-tabla-estandar"></tbody>
+                </table>
+            </div>
+            <button class="btn-action btn-verde" onclick="guardarEstandarEIniciarCaptura()"><svg class="ico"><use href="#i-check"/></svg>Confirmar estándar e iniciar captura</button>
+        </div>
+
+        <div id="pantalla-captura" class="card hidden">
+            <div id="notificacion-sistema" class="alerta-cambio hidden"></div>
+
+            <div class="status-box">
+                <span id="txt-info-estudio">-</span>
+                <span id="txt-contador">Total: 0</span>
+            </div>
+
+            <div class="row">
+                <div class="form-group" style="flex: 1;">
+                    <label>Operador actual</label>
+                    <select id="cap-inspector" onchange="cambioOperadorCaptura()"></select>
+                    <button type="button" class="btn-link-add" onclick="agregarOperador()"><svg class="ico"><use href="#i-userplus"/></svg>Agregar operador</button>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Ensayo</label>
+                    <select id="cap-ensayo" onchange="cambioFiltroCaptura()"></select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 6px;">
+                <label id="lbl-pieza-status"># NÚMERO DE PIEZA</label>
+                <input type="number" id="cap-pieza" class="input-pieza-gigante" pattern="[0-9]*" inputmode="numeric" placeholder="0" onkeydown="manejarEnterPieza(event)">
+            </div>
+
+            <div id="bloque-atributos" class="btn-container">
+                <button class="btn-captura btn-ok" onclick="registrarDato('OK')">OK</button>
+                <button class="btn-captura btn-nok" onclick="registrarDato('NOK')">NOK</button>
+            </div>
+
+            <div id="bloque-variables" class="form-group hidden" style="margin-top: 16px;">
+                <label>Medición</label>
+                <input type="number" id="cap-valor-variable" class="input-medicion" step="any" placeholder="0.0000" onkeydown="manejarEnterValor(event)">
+                <button class="btn-action" onclick="registrarDato(document.getElementById('cap-valor-variable').value)"><svg class="ico"><use href="#i-check"/></svg>Confirmar y registrar valor</button>
+            </div>
+
+            <div class="panel-info-piso">
+                <div class="panel-titulo" id="titulo-bitacora">Monitoreo de piezas evaluadas</div>
+                <div id="bitacora-piezas" class="bitacora-lista"></div>
+            </div>
+
+            <div class="panel-info-piso">
+                <div class="panel-titulo">Avance</div>
+                <div id="lista-progresos"></div>
+            </div>
+        </div>
+
+        <div id="pantalla-acciones" class="card hidden">
+            <div class="grupo-titulo">Resultados</div>
+            <button id="btn-resultados" class="btn-act primario hidden" onclick="verResultados()">
+                <svg class="ico"><use href="#i-chart"/></svg><span><strong>Generar resultados</strong><small>Tablas, gráficas y veredicto AIAG</small></span></button>
+            <button class="btn-act" onclick="abrirDatosReporte()">
+                <svg class="ico"><use href="#i-file"/></svg><span><strong>Generar reporte oficial</strong><small>Documento completo para auditoría (PDF)</small></span></button>
+            <button class="btn-act" onclick="revisarEstudio()">
+                <svg class="ico"><use href="#i-list"/></svg><span><strong>Detalle de estudio</strong><small>Avance y piezas faltantes por operador</small></span></button>
+            <button id="btn-discrepancias" class="btn-act hidden" onclick="verDiscrepancias()">
+                <svg class="ico"><use href="#i-flag"/></svg><span><strong>Discrepancias vs estándar</strong><small>Respuestas que difieren del master</small></span></button>
+
+            <div class="grupo-titulo">Datos y respaldo</div>
+            <button class="btn-act" onclick="exportarAExcel()">
+                <svg class="ico"><use href="#i-file"/></svg><span><strong>Generar archivo de datos</strong><small>Excel listo para analizar en Minitab</small></span></button>
+            <button class="btn-act" onclick="descargarRespaldo()">
+                <svg class="ico"><use href="#i-save"/></svg><span><strong>Generar respaldo</strong><small>Guarda el estudio para continuarlo después</small></span></button>
+
+            <div class="grupo-titulo">Estudio</div>
+            <button class="btn-act peligro" onclick="reiniciarTodo()">
+                <svg class="ico"><use href="#i-restart"/></svg><span><strong>Reiniciar estudio</strong><small>Elimina los datos y comienza uno nuevo</small></span></button>
+        </div>
+
+        <div class="pie">FISCHER MSA STUDIO · CALIDAD · FISCHER S.A. DE C.V.</div>
+    </div>
+
+    <div id="modal-resultados" class="modal-fondo hidden" onclick="if(event.target===this)cerrarResultados()">
+        <div class="modal-caja modal-xl">
+            <div class="res-cab no-print"><div class="res-cab-tit" id="res-titulo">Resultado R&amp;R</div><div class="res-cab-sub" id="res-subtitulo"></div></div>
+            <div id="res-print-head" class="print-only"></div>
+            <div id="res-contenido"></div>
+            <div id="res-print-pie" class="print-only pie-print"></div>
+            <div class="modal-pie no-print">
+                <button class="btn-action" onclick="guardarResultadosPDF()"><svg class="ico"><use href="#i-file"/></svg>Guardar resultados (PDF)</button>
+                <button class="btn-action btn-outline" onclick="cerrarResultados()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-datos-reporte" class="modal-fondo hidden" onclick="if(event.target===this)cerrarDatosReporte()">
+        <div class="modal-caja modal-xl" style="max-width:780px;">
+            <div class="res-cab"><div class="res-cab-tit">Datos del reporte oficial</div><div class="res-cab-sub">Todos los campos son opcionales: lo que quede en blanco se imprime como línea para llenar a mano. Pase el cursor (o toque) sobre la «i» para ver qué se debe capturar.</div></div>
+            <div id="rep-campos" class="rep-campos"></div>
+            <div class="modal-pie">
+                <button class="btn-action" onclick="generarReporte()"><svg class="ico"><use href="#i-file"/></svg>Generar reporte</button>
+                <button class="btn-action btn-outline" onclick="cerrarDatosReporte()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-reporte" class="modal-fondo hidden" onclick="if(event.target===this)cerrarReporte()">
+        <div class="modal-caja modal-xl">
+            <div class="rpt-hoja" id="rep-contenido"></div>
+            <div class="modal-pie no-print">
+                <button class="btn-action" onclick="guardarReportePDF()"><svg class="ico"><use href="#i-file"/></svg>Guardar reporte (PDF)</button>
+                <button class="btn-action btn-outline" onclick="editarDatosReporte()">Editar datos</button>
+                <button class="btn-action btn-outline" onclick="cerrarReporte()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-grafica" class="modal-fondo hidden" style="z-index:60;" onclick="if(event.target===this)cerrarGrafica()">
+        <div class="modal-caja modal-xl" style="max-width:1000px;">
+            <div id="graf-visor"></div>
+            <div class="modal-pie">
+                <button class="btn-action btn-outline" onclick="navGrafica(-1)">‹ Anterior</button>
+                <button class="btn-action btn-outline" onclick="navGrafica(1)">Siguiente ›</button>
+                <button class="btn-action" onclick="cerrarGrafica()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-revision" class="modal-fondo hidden" onclick="if(event.target===this)cerrarRevision()">
+        <div class="modal-caja">
+            <div class="card-title">Detalle del estudio</div>
+            <p class="ayuda">Toque una pieza faltante (rojo) para ir directo a capturarla.</p>
+            <div id="rev-contenido"></div>
+            <button class="btn-action btn-outline" onclick="cerrarRevision()">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        const KEYS = ['ryr_config', 'ryr_registros', 'ryr_estandar', 'ryr_last_inspector', 'ryr_last_ensayo', 'ryr_reporte'];
+        let configuracion = {}; let registros = []; let listaInspectores = []; let mapaEstandar = {};
+        let piezaEnEdicion = null;
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        function guardarDatos(k, v) {
+            try { localStorage.setItem(k, JSON.stringify(v)); }
+            catch (e) { alert("No se pudo guardar en este navegador (almacenamiento lleno o modo privado). Descargue un respaldo ahora."); }
+        }
+        function leerDatos(k, def) {
+            try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; }
+        }
+
+        window.onload = function () {
+            generarInputsOperadores();
+            const cfg = leerDatos('ryr_config', null);
+            if (cfg) {
+                configuracion = cfg;
+                configuracion.ensayos = configuracion.ensayos || 3;
+                registros = leerDatos('ryr_registros', []);
+                mapaEstandar = leerDatos('ryr_estandar', {});
+                listaInspectores = configuracion.inspectores || [];
+                inicializarInterfazCaptura();
+                $('cap-inspector').value = localStorage.getItem('ryr_last_inspector') || "";
+                const ult = Number(localStorage.getItem('ryr_last_ensayo')) || 1;
+                $('cap-ensayo').value = ult <= configuracion.ensayos ? ult : 1;
+                toggleTipoEstudioUI(configuracion.tipo);
+                actualizarInterfazCompleta();
+                $('pantalla-config').classList.add('hidden');
+                $('pantalla-captura').classList.remove('hidden');
+                $('pantalla-acciones').classList.remove('hidden');
+            }
+        };
+
+        /* ---------- CONFIGURACIÓN ---------- */
+        function generarInputsOperadores() {
+            let num = parseInt($('cfg-num-ops').value);
+            if (isNaN(num) || num < 0) num = 0;
+            if (num > 10) num = 10;
+            const c = $('contenedor-operadores-inputs');
+            const previos = Array.from(c.querySelectorAll('input')).map(i => i.value);   // conserva lo ya escrito
+            c.innerHTML = "";
+            for (let i = 1; i <= num; i++) {
+                const d = document.createElement('div');
+                d.className = 'form-group'; d.style.marginBottom = '8px';
+                const inp = document.createElement('input');
+                inp.type = 'text'; inp.id = 'cfg-ins' + i; inp.placeholder = 'VISA Operador ' + i;
+                inp.value = previos[i - 1] || "";
+                inp.oninput = function () { this.value = this.value.toUpperCase(); };
+                d.appendChild(inp); c.appendChild(d);
+            }
+        }
+
+        function elegirTipo(t) {
+            $('cfg-tipo').value = t;
+            document.querySelectorAll('.tipo-op').forEach(b => b.classList.toggle('activo', b.dataset.tipo === t));
+            toggleTipoEstudio();
+        }
+        function toggleTipoEstudio() { toggleTipoEstudioUI($('cfg-tipo').value); }
+        function toggleTipoEstudioUI(tipo) {
+            const attr = tipo === 'Atributos';
+            $('bloque-atributos').classList.toggle('hidden', !attr);
+            $('bloque-variables').classList.toggle('hidden', attr);
+            $('btn-discrepancias').classList.toggle('hidden', !attr);
+            $('btn-resultados').classList.remove('hidden');
+            $('cfg-bloque-variables').classList.toggle('hidden', attr);
+        }
+
+        function validarEIniciar() {
+            const equipo = $('cfg-equipo').value.trim().toUpperCase();
+            const visa = $('cfg-visa').value.trim().toUpperCase();
+            const numOps = parseInt($('cfg-num-ops').value);
+            const muestra = parseInt($('cfg-muestra').value);
+            const ensayos = 3;
+            const tipo = $('cfg-tipo').value;
+
+            if (!equipo || !visa) { alert("Complete los datos requeridos: Equipo y VISA del Administrador."); return; }
+            if (!muestra || muestra <= 0) { alert("La cantidad de muestras debe ser un entero mayor a cero."); return; }
+            if (isNaN(numOps) || numOps < 2) { alert("Un estudio R&R requiere al menos 2 operadores (lo habitual son 3)."); return; }
+
+            const ops = [];
+            for (let i = 1; i <= numOps; i++) {
+                const val = ($(`cfg-ins${i}`).value || "").trim().toUpperCase();
+                if (!val) { alert(`Capture la VISA del Operador ${i}.`); return; }
+                ops.push(val);
+            }
+            if (new Set(ops).size !== ops.length) { alert("Hay VISAs de operador repetidas. Cada operador debe tener una VISA distinta."); return; }
+
+            let lsl = null, usl = null, k = 6, alfa = 0.05;
+            if (tipo === 'Variables') {
+                const a = $('cfg-lsl').value, b = $('cfg-usl').value;
+                if ((a === '') !== (b === '')) { alert("Capture ambos límites de especificación (LSL y USL) o deje los dos en blanco."); return; }
+                if (a !== '') { lsl = Number(a); usl = Number(b); if (!(usl > lsl)) { alert("El límite superior (USL) debe ser mayor que el inferior (LSL)."); return; } }
+                k = Number($('cfg-k').value); alfa = Number($('cfg-alfa').value);
+            }
+            listaInspectores = ops;
+            configuracion = { equipo, tipo, muestra, ensayos, visa, inspectores: ops, lsl, usl, k, alfa, planta: $('cfg-planta').value || '' };
+            $('pantalla-config').classList.add('hidden');
+
+            if (tipo === "Atributos") {
+                mapaEstandar = {};
+                $('pantalla-estandar').classList.remove('hidden');
+                armarTablaEstandar(muestra);
+                actualizarConteoEstandar();
+            } else {
+                mapaEstandar = {};
+                iniciarEstudioOficial();
+            }
+        }
+
+        function armarTablaEstandar(total) {
+            const cuerpo = $('cuerpo-tabla-estandar');
+            cuerpo.innerHTML = "";
+            for (let i = 1; i <= total; i++) {
+                cuerpo.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:var(--primary-color);">Pieza #${i}</td>
+                        <td><button id="btn-std-${i}" class="btn-toggle-std btn-ok" onclick="toggleEstandarItem(${i})">OK</button></td>
+                    </tr>`;
+                mapaEstandar[i] = "OK";
+            }
+        }
+
+        function toggleEstandarItem(id) {
+            const btn = $(`btn-std-${id}`);
+            const nok = mapaEstandar[id] === "OK";
+            mapaEstandar[id] = nok ? "NOK" : "OK";
+            btn.innerText = nok ? "NOK" : "OK";
+            btn.className = "btn-toggle-std " + (nok ? "btn-nok" : "btn-ok");
+            actualizarConteoEstandar();
+        }
+
+        function actualizarConteoEstandar() {
+            const v = Object.values(mapaEstandar), nok = v.filter(x => x === "NOK").length;
+            $('conteo-estandar').innerHTML = `<span class="chip-std nok">${nok} NOK</span><span class="chip-std ok">${v.length - nok} OK</span><span>${v.length} piezas</span>`;
+        }
+
+        function guardarEstandarEIniciarCaptura() {
+            const vals = Object.values(mapaEstandar);
+            const nOK = vals.filter(v => v === "OK").length;
+            const nNOK = vals.length - nOK;
+            if (nOK === 0 || nNOK === 0) {
+                alert("El estándar debe incluir piezas OK y NOK. Hoy tiene " + nOK + " OK y " + nNOK + " NOK. Marque las piezas NOK que correspondan.");
+                return;
+            }
+            guardarDatos('ryr_estandar', mapaEstandar);
+            $('pantalla-estandar').classList.add('hidden');
+            iniciarEstudioOficial();
+        }
+
+        function iniciarEstudioOficial() {
+            guardarDatos('ryr_config', configuracion);
+            guardarDatos('ryr_registros', []);
+            localStorage.removeItem('ryr_last_inspector');
+            localStorage.removeItem('ryr_last_ensayo');
+            localStorage.removeItem('ryr_reporte');
+            if (configuracion.tipo !== 'Atributos') localStorage.removeItem('ryr_estandar');
+            registros = [];
+            inicializarInterfazCaptura();
+            toggleTipoEstudioUI(configuracion.tipo);
+            actualizarInterfazCompleta();
+            $('pantalla-captura').classList.remove('hidden');
+            $('pantalla-acciones').classList.remove('hidden');
+            $('cap-pieza').focus();
+        }
+
+        function inicializarInterfazCaptura() {
+            $('txt-info-estudio').innerText = `Equipo: ${configuracion.equipo} | Administrador: ${configuracion.visa}`;
+            llenarSelectores();
+        }
+
+        function todosOperadores() {
+            const s = new Set(listaInspectores);
+            registros.forEach(r => s.add(r.Inspector));
+            return Array.from(s).filter(x => x && x.trim() !== "");
+        }
+
+        function llenarSelectores() {
+            const sel = $('cap-inspector');
+            sel.innerHTML = '<option value="">SELECCIONAR</option>';
+            todosOperadores().forEach(o => {
+                const op = document.createElement('option');
+                op.value = o; op.textContent = o; sel.appendChild(op);
+            });
+            const se = $('cap-ensayo');
+            se.innerHTML = "";
+            for (let n = 1; n <= configuracion.ensayos; n++) {
+                const op = document.createElement('option');
+                op.value = n; op.textContent = n === 1 ? "1er Ensayo" : n + "º Ensayo";
+                se.appendChild(op);
+            }
+        }
+
+        function agregarOperador() {
+            const v = prompt("VISA del operador adicional:");
+            if (v === null) return;
+            const visa = v.trim().toUpperCase();
+            if (!visa) { alert("Capture una VISA."); return; }
+            if (todosOperadores().includes(visa)) { alert("Ese operador ya existe en el estudio."); return; }
+            if (!confirm(`¿Agregar al operador ${visa} al estudio?`)) return;
+            listaInspectores.push(visa);
+            configuracion.inspectores = listaInspectores;
+            guardarDatos('ryr_config', configuracion);
+            llenarSelectores();
+            $('cap-inspector').value = visa;
+            cambioOperadorCaptura();
+            mostrarNotificacion("➕ Operador " + visa + " agregado al estudio.");
+        }
+
+        /* ---------- CAPTURA ---------- */
+        function resetEtiquetaPieza() {
+            $('lbl-pieza-status').innerText = "# NÚMERO DE PIEZA";
+            $('lbl-pieza-status').style.color = "";
+        }
+
+        function manejarEnterPieza(e) {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            const p = Number($('cap-pieza').value);
+            if (!Number.isInteger(p) || p < 1 || p > configuracion.muestra) {
+                alert(`ID de muestra fuera de rango. Ingrese un entero entre 1 y ${configuracion.muestra}.`);
+                return;
+            }
+            const ins = $('cap-inspector').value, ens = Number($('cap-ensayo').value);
+            if (registros.some(r => r.Inspector === ins && r.Ensayo === ens && r.Pieza === p) && piezaEnEdicion !== p) {
+                $('lbl-pieza-status').innerText = "⚠️ PIEZA " + p + " YA CAPTURADA";
+                $('lbl-pieza-status').style.color = "var(--warning-color)";
+            }
+            if (configuracion.tipo === "Variables") $('cap-valor-variable').focus();
+        }
+
+        function manejarEnterValor(e) {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            const valor = $('cap-valor-variable').value;
+            if (valor === "") { alert("Campo numérico vacío. Ingrese la medición."); return; }
+            registrarDato(valor);
+        }
+
+        function registrarDato(valorResultado) {
+            const inspector = $('cap-inspector').value.trim().toUpperCase();
+            const ensayo = parseInt($('cap-ensayo').value);
+            const pieza = Number($('cap-pieza').value);
+
+            if (!inspector) { alert("Seleccione el operador antes de guardar."); return; }
+            if (!Number.isInteger(pieza) || pieza < 1 || pieza > configuracion.muestra) {
+                alert(`Pieza fuera de rango: ingrese un entero entre 1 y ${configuracion.muestra}.`); return;
+            }
+
+            let valor;
+            if (configuracion.tipo === "Variables") {
+                if (valorResultado === "" || valorResultado === null) { alert("Ingrese la medición."); return; }
+                valor = Number(valorResultado);
+                if (!Number.isFinite(valor)) { alert("Valor numérico inválido."); return; }
+            } else {
+                valor = valorResultado;
+            }
+
+            const mismo = r => r.Inspector === inspector && r.Ensayo === ensayo && r.Pieza === pieza;
+            const previo = registros.find(mismo);
+            if (previo && piezaEnEdicion !== pieza &&
+                !confirm(`Ya existe un registro de la pieza ${pieza} (${previo.Resultado}).\n¿Reemplazarlo por ${valor}?`)) return;
+
+            if (configuracion.tipo === "Variables") {
+                const otros = registros.filter(r => r.Pieza === pieza && !mismo(r)).map(r => Number(r.Resultado));
+                if (otros.length >= 2) {
+                    const m = otros.reduce((a, b) => a + b, 0) / otros.length;
+                    const spread = Math.max(...otros) - Math.min(...otros);
+                    if (Math.abs(valor - m) > Math.max(3 * spread, 0.2 * Math.abs(m), 1e-9) &&
+                        !confirm(`El valor ${valor} es muy distinto al resto de lecturas de la pieza ${pieza} (promedio ${m.toFixed(4)}).\n¿Es correcto?`)) return;
+                }
+            }
+
+            registros = registros.filter(r => !mismo(r));
+            const orden = Math.max(0, ...registros.map(r => r.Orden || 0)) + 1;
+            registros.push({
+                Equipo: configuracion.equipo, Tipo_Estudio: configuracion.tipo, Visa: configuracion.visa,
+                Inspector: inspector, Ensayo: ensayo, Pieza: pieza, Resultado: valor,
+                Orden: orden, Fecha: new Date().toISOString()
+            });
+            guardarDatos('ryr_registros', registros);
+
+            piezaEnEdicion = null;
+            $('cap-pieza').value = "";
+            $('cap-valor-variable').value = "";
+            resetEtiquetaPieza();
+
+            const total = registros.filter(r => r.Inspector === inspector && r.Ensayo === ensayo).length;
+            if (!previo && total === configuracion.muestra) {
+                if (ensayo < configuracion.ensayos) {
+                    $('cap-ensayo').value = ensayo + 1;
+                    mostrarNotificacion(`🟢 Ensayo ${ensayo} completo para ${inspector}. Pasando al Ensayo ${ensayo + 1}.`);
+                } else {
+                    mostrarNotificacion(`🏆 Los ${configuracion.ensayos} ensayos de ${inspector} están completos.`);
+                }
+            }
+
+            guardarEstado();
+            actualizarInterfazCompleta();
+            $('cap-pieza').focus();
+        }
+
+        function triggerEditar(numPieza) {
+            piezaEnEdicion = numPieza;
+            $('cap-pieza').value = numPieza;
+            const lbl = $('lbl-pieza-status');
+            lbl.innerText = "⚠️ CORRIGIENDO MUESTRA #" + numPieza;
+            lbl.style.color = "var(--danger-color)";
+            (configuracion.tipo === "Variables" ? $('cap-valor-variable') : $('cap-pieza')).focus();
+        }
+
+        function mostrarNotificacion(msj) {
+            const box = $('notificacion-sistema');
+            box.textContent = msj; box.classList.remove('hidden');
+            setTimeout(() => box.classList.add('hidden'), 4000);
+        }
+
+        function guardarEstado() {
+            localStorage.setItem('ryr_last_inspector', $('cap-inspector').value);
+            localStorage.setItem('ryr_last_ensayo', $('cap-ensayo').value);
+        }
+
+        function cambioOperadorCaptura() {
+            const ins = $('cap-inspector').value;
+            let e = 1;
+            if (ins) {
+                for (let n = 1; n <= configuracion.ensayos; n++) {
+                    e = n;
+                    if (registros.filter(r => r.Inspector === ins && r.Ensayo === n).length < configuracion.muestra) break;
+                }
+            }
+            $('cap-ensayo').value = e;
+            cambioFiltroCaptura();
+        }
+
+        function cambioFiltroCaptura() {
+            piezaEnEdicion = null;
+            guardarEstado();
+            resetEtiquetaPieza();
+            actualizarBitacora();
+            actualizarProgreso();
+        }
+
+        function actualizarInterfazCompleta() { actualizarProgreso(); actualizarBitacora(); }
+
+        function actualizarProgreso() {
+            $('txt-contador').innerText = "Registros: " + registros.length;
+            const meta = configuracion.muestra * configuracion.ensayos;
+            const contenedor = $('lista-progresos');
+            contenedor.innerHTML = "";
+            todosOperadores().forEach(ins => {
+                const conteo = registros.filter(r => r.Inspector === ins).length;
+                const porc = Math.min(Math.round((conteo / meta) * 100), 100);
+                let chips = "";
+                for (let e = 1; e <= configuracion.ensayos; e++) {
+                    const c = registros.filter(r => r.Inspector === ins && r.Ensayo === e).length;
+                    const cl = c >= configuracion.muestra ? 'ok' : (c > 0 ? 'parcial' : '');
+                    chips += `<span class="ens-chip ${cl}">E${e} ${c >= configuracion.muestra ? '✓' : c + '/' + configuracion.muestra}</span>`;
+                }
+                contenedor.innerHTML += `
+                    <div class="inspector-progreso">
+                        <div class="inspector-meta"><span>Operador ${esc(ins)}</span><span>${conteo}/${meta} (${porc}%)</span></div>
+                        <div class="ens-chips">${chips}</div>
+                        <div class="barra-gris"><div class="barra-color" style="width: ${porc}%; background: ${porc === 100 ? 'var(--success-color)' : 'var(--accent-color)'};"></div></div>
+                    </div>`;
+            });
+        }
+
+        function actualizarBitacora() {
+            const ins = $('cap-inspector').value.trim().toUpperCase();
+            const ens = parseInt($('cap-ensayo').value);
+            $('titulo-bitacora').innerText = "RESUMEN : " + (ins || '...') + " - Ensayo " + ens;
+            const cont = $('bitacora-piezas');
+            cont.innerHTML = "";
+            if (!ins) return;
+
+            const lista = registros.filter(r => r.Inspector === ins && r.Ensayo === ens).sort((a, b) => b.Pieza - a.Pieza);
+            if (lista.length === 0) {
+                cont.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding: 12px; font-style:italic; font-size:0.8rem;">Sin registros activos en esta corrida.</div>`;
+                return;
+            }
+            // El estándar ya NO se muestra aquí: mantiene el estudio ciego.
+            lista.forEach(r => {
+                let clase = 'tag-var';
+                if (configuracion.tipo === 'Atributos') clase = r.Resultado === 'OK' ? 'tag-ok' : 'tag-nok';
+                cont.innerHTML += `
+                    <div class="bitacora-item">
+                        <span>📦 Muestra #${r.Pieza}</span>
+                        <div class="bitacora-acciones">
+                            <span class="tag-resultado ${clase}">${esc(r.Resultado)}</span>
+                            <button class="btn-editar-item" onclick="triggerEditar(${r.Pieza})">✏️</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        /* ---------- REVISIÓN, RESPALDO Y EXPORTACIÓN ---------- */
+        function faltantes() {
+            const f = [];
+            todosOperadores().forEach(op => {
+                for (let e = 1; e <= configuracion.ensayos; e++) {
+                    const miss = [];
+                    for (let p = 1; p <= configuracion.muestra; p++) {
+                        if (!registros.some(r => r.Inspector === op && r.Ensayo === e && r.Pieza === p)) miss.push(p);
+                    }
+                    if (miss.length) f.push({ op, e, miss });
+                }
+            });
+            return f;
+        }
+        function textoFaltantes(f) {
+            return f.map(x => `${x.op} · ensayo ${x.e}: pieza${x.miss.length > 1 ? 's' : ''} ${x.miss.slice(0, 15).join(', ')}${x.miss.length > 15 ? '…' : ''}`).join('\n');
+        }
+        function crear(tag, clase, texto) {
+            const el = document.createElement(tag);
+            if (clase) el.className = clase;
+            if (texto !== undefined) el.textContent = texto;
+            return el;
+        }
+
+        function revisarEstudio() {
+            const cont = $('rev-contenido');
+            cont.innerHTML = "";
+            const ops = todosOperadores();
+            const m = configuracion.muestra;
+            const meta = m * configuracion.ensayos * ops.length;
+            const hechos = registros.length;
+            const completo = faltantes().length === 0;
+            cont.appendChild(crear('div', 'rev-resumen ' + (completo ? 'ok' : 'pend'),
+                completo ? "✅ Estudio completo. Listo para exportar."
+                         : `Avance total: ${hechos} de ${meta} registros (${Math.min(100, Math.round(hechos / meta * 100))}%)`));
+
+            ops.forEach(op => {
+                const bloque = crear('div', 'rev-op');
+                bloque.appendChild(crear('div', 'rev-op-titulo', 'Operador ' + op));
+                for (let e = 1; e <= configuracion.ensayos; e++) {
+                    const miss = [];
+                    for (let p = 1; p <= m; p++) {
+                        if (!registros.some(r => r.Inspector === op && r.Ensayo === e && r.Pieza === p)) miss.push(p);
+                    }
+                    const fila = crear('div', 'rev-fila');
+                    const cab = crear('div', 'rev-fila-cab');
+                    cab.appendChild(crear('span', '', 'Ensayo ' + e));
+                    if (!miss.length) cab.appendChild(crear('span', 'rev-ok', '✅ Completo'));
+                    else if (miss.length === m) cab.appendChild(crear('span', 'rev-vacio', 'Sin iniciar'));
+                    else cab.appendChild(crear('span', 'rev-parcial', `⚠️ ${m - miss.length}/${m} · faltan ${miss.length}`));
+                    fila.appendChild(cab);
+                    if (miss.length) {
+                        const chips = crear('div', 'rev-chips');
+                        miss.slice(0, 30).forEach(p => {
+                            const b = crear('button', 'chip-falta', '#' + p);
+                            b.onclick = () => irAFaltante(op, e, p);
+                            chips.appendChild(b);
+                        });
+                        if (miss.length > 30) chips.appendChild(crear('span', 'rev-vacio', `+${miss.length - 30} más`));
+                        fila.appendChild(chips);
+                    }
+                    bloque.appendChild(fila);
+                }
+                cont.appendChild(bloque);
+            });
+            $('modal-revision').classList.remove('hidden');
+        }
+
+        function cerrarRevision() { $('modal-revision').classList.add('hidden'); }
+
+        function irAFaltante(op, ensayo, pieza) {
+            $('cap-inspector').value = op;
+            $('cap-ensayo').value = ensayo;
+            cambioFiltroCaptura();
+            $('cap-pieza').value = pieza;
+            cerrarRevision();
+            $('pantalla-captura').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            (configuracion.tipo === "Variables" ? $('cap-valor-variable') : $('cap-pieza')).focus();
+        }
+
+        function verDiscrepancias() {
+            const v = prompt("VISA del administrador:");
+            if (v === null) return;
+            if (v.trim().toUpperCase() !== configuracion.visa) { alert("VISA incorrecta."); return; }
+            const out = [];
+            registros.forEach(r => {
+                const s = mapaEstandar[r.Pieza];
+                if (s && r.Resultado !== s) out.push(`${r.Inspector} · ensayo ${r.Ensayo} · pieza ${r.Pieza}: capturó ${r.Resultado} (estándar ${s})`);
+            });
+            alert(out.length ? `Discrepancias contra el estándar (${out.length}):\n\n` + out.slice(0, 40).join('\n') : "Sin discrepancias contra el estándar.");
+        }
+
+        function nombreBase() {
+            const eq = String(configuracion.equipo).replace(/[\\\/:*?"<>|&]+/g, '-').replace(/\s+/g, '_');
+            return `RR_${configuracion.tipo}_${eq}_${new Date().toISOString().slice(0, 10)}`;
+        }
+
+        function descargar(nombre, texto, mime) {
+            const bom = mime.startsWith('text/csv') ? '\ufeff' : '';
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([bom + texto], { type: mime }));
+            a.download = nombre;
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        }
+
+        function aCSV(filas) {
+            const cols = Object.keys(filas[0] || {});
+            const cel = v => { v = (v === undefined || v === null) ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+            return [cols.join(',')].concat(filas.map(f => cols.map(c => cel(f[c])).join(','))).join('\n');
+        }
+
+        function descargarRespaldo() {
+            if (!registros.length) { alert("No hay datos para respaldar."); return; }
+            const cfg = [
+                { CAMPO: "Equipo", VALOR: configuracion.equipo },
+                { CAMPO: "Tipo de estudio", VALOR: configuracion.tipo },
+                { CAMPO: "Administrador", VALOR: configuracion.visa },
+                { CAMPO: "Nº de piezas", VALOR: configuracion.muestra },
+                { CAMPO: "Nº de ensayos", VALOR: configuracion.ensayos },
+                { CAMPO: "Operadores", VALOR: todosOperadores().join(", ") },
+                { CAMPO: "Planta", VALOR: configuracion.planta || "" }, { CAMPO: "LSL", VALOR: configuracion.lsl ?? "" }, { CAMPO: "USL", VALOR: configuracion.usl ?? "" },
+                { CAMPO: "Multiplicador", VALOR: configuracion.k || "" }, { CAMPO: "Alfa interacción", VALOR: configuracion.alfa || "" },
+                { CAMPO: "Fecha del respaldo", VALOR: new Date().toLocaleString() }
+            ];
+            const regs = [...registros].sort((a, b) => (a.Orden || 0) - (b.Orden || 0)).map(r => ({
+                "ORDEN": r.Orden || "", "FECHA_HORA": r.Fecha || "", "INSPECTOR": r.Inspector,
+                "ENSAYO": r.Ensayo, "MUESTRA": r.Pieza, "RESULTADO": r.Resultado
+            }));
+            const std = Object.keys(mapaEstandar).map(p => ({ "MUESTRA": Number(p), "ESTANDAR": mapaEstandar[p] }));
+            const base = nombreBase() + '_respaldo';
+
+            if (typeof XLSX === 'undefined') {
+                descargar(base + '.csv', aCSV(regs), 'text/csv;charset=utf-8');
+                alert("No cargó la librería de Excel (¿sin internet?). Se descargó el respaldo de registros en CSV, que abre en Excel.");
+                return;
+            }
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(cfg), "Configuracion");
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(regs), "Registros");
+            if (std.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(std), "Estandar");
+            XLSX.writeFile(wb, base + '.xlsx');
+        }
+
+        function exportarAExcel() {
+            if (!registros.length) { alert("No hay datos para exportar."); return; }
+            const f = faltantes();
+            if (f.length && !confirm("⚠️ El estudio está incompleto:\n\n" + textoFaltantes(f) + "\n\nMinitab necesita un diseño balanceado. ¿Exportar de todos modos?")) return;
+
+            let datos = [];
+            if (configuracion.tipo === "Variables") {
+                [...registros].sort((a, b) =>
+                    a.Ensayo - b.Ensayo || a.Inspector.localeCompare(b.Inspector) || a.Pieza - b.Pieza
+                ).forEach(r => datos.push({ "ENSAYO": r.Ensayo, "INSPECTOR": r.Inspector, "MUESTRA": r.Pieza, "MEDICION": Number(r.Resultado) }));
+            } else {
+                const ops = todosOperadores();
+                for (let p = 1; p <= configuracion.muestra; p++) {
+                    const fila = { "MUESTRA": p, "ESTÁNDAR": mapaEstandar[p] || "" };
+                    ops.forEach(op => {
+                        for (let e = 1; e <= configuracion.ensayos; e++) {
+                            const r = registros.find(x => x.Pieza === p && x.Inspector === op && x.Ensayo === e);
+                            fila[`${op}_E${e}`] = r ? r.Resultado : "";
+                        }
+                    });
+                    datos.push(fila);
+                }
+            }
+
+            const bitacora = [...registros].sort((a, b) => (a.Orden || 0) - (b.Orden || 0)).map(r => ({
+                "ORDEN": r.Orden || "", "FECHA_HORA": r.Fecha || "", "INSPECTOR": r.Inspector,
+                "ENSAYO": r.Ensayo, "MUESTRA": r.Pieza, "RESULTADO": r.Resultado
+            }));
+
+            const base = nombreBase();
+            if (typeof XLSX === 'undefined') {
+                descargar(base + '.csv', aCSV(datos), 'text/csv;charset=utf-8');
+                alert("No cargó la librería de Excel (¿sin internet?). Se descargó un CSV con los mismos datos; Minitab también lo abre.");
+                return;
+            }
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(datos), "Datos Minitab");
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(bitacora), "Bitacora");
+            XLSX.writeFile(wb, base + '.xlsx');
+        }
+
+        function restaurarRespaldo(input) {
+            const file = input.files[0];
+            input.value = "";
+            if (!file) return;
+            if (typeof XLSX === 'undefined') { alert("No cargó la librería de Excel (¿sin internet?). Intente de nuevo con conexión."); return; }
+            if (registros.length && !confirm(`Ya hay un estudio en curso con ${registros.length} registros. Restaurar el respaldo lo reemplazará.\n\n¿Continuar?`)) return;
+
+            const lector = new FileReader();
+            lector.onerror = () => alert("No se pudo leer el archivo.");
+            lector.onload = e => {
+                try {
+                    const wb = XLSX.read(e.target.result, { type: 'array' });
+                    if (!wb.Sheets['Configuracion'] || !wb.Sheets['Registros'])
+                        throw new Error("El archivo no es un respaldo de esta herramienta (faltan las hojas Configuracion y Registros). Use el archivo '_respaldo.xlsx', no la matriz de Minitab.");
+
+                    const filasCfg = XLSX.utils.sheet_to_json(wb.Sheets['Configuracion']);
+                    const g = c => { const f = filasCfg.find(r => r.CAMPO === c); return f ? f.VALOR : undefined; };
+                    const equipo = String(g('Equipo') || '').trim().toUpperCase();
+                    const visa = String(g('Administrador') || '').trim().toUpperCase();
+                    const tipo = g('Tipo de estudio');
+                    const muestra = Number(g('Nº de piezas'));
+                    const ensayos = Number(g('Nº de ensayos')) || 3;
+                    const ops = String(g('Operadores') || '').split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+                    const numOpc = v => (v === undefined || v === '' || !Number.isFinite(Number(v))) ? null : Number(v);
+                    const lslR = numOpc(g('LSL')), uslR = numOpc(g('USL')), kR = numOpc(g('Multiplicador')) || 6, alfaR = numOpc(g('Alfa interacción')) || 0.05;
+
+                    if (!equipo || !visa) throw new Error("La hoja Configuracion no tiene Equipo o Administrador.");
+                    if (tipo !== 'Variables' && tipo !== 'Atributos') throw new Error("Tipo de estudio no reconocido en Configuracion.");
+                    if (!Number.isInteger(muestra) || muestra < 1) throw new Error("Número de piezas inválido en Configuracion.");
+                    if (ops.length < 2) throw new Error("Configuracion debe incluir al menos 2 operadores.");
+
+                    const mapa = new Map();
+                    XLSX.utils.sheet_to_json(wb.Sheets['Registros']).forEach((r, i) => {
+                        const fila = i + 2;
+                        const ins = String(r.INSPECTOR || '').trim().toUpperCase();
+                        const ens = Number(r.ENSAYO), pza = Number(r.MUESTRA);
+                        if (!ins) throw new Error(`Registros, fila ${fila}: falta el inspector.`);
+                        if (!Number.isInteger(ens) || ens < 1 || ens > ensayos) throw new Error(`Registros, fila ${fila}: ensayo inválido.`);
+                        if (!Number.isInteger(pza) || pza < 1 || pza > muestra) throw new Error(`Registros, fila ${fila}: pieza fuera de rango.`);
+                        let res;
+                        if (tipo === 'Variables') {
+                            res = Number(r.RESULTADO);
+                            if (r.RESULTADO === '' || r.RESULTADO === undefined || !Number.isFinite(res)) throw new Error(`Registros, fila ${fila}: resultado no numérico.`);
+                        } else {
+                            res = String(r.RESULTADO || '').trim().toUpperCase();
+                            if (res !== 'OK' && res !== 'NOK') throw new Error(`Registros, fila ${fila}: el resultado debe ser OK o NOK.`);
+                        }
+                        mapa.set(`${ins}|${ens}|${pza}`, {
+                            Equipo: equipo, Tipo_Estudio: tipo, Visa: visa, Inspector: ins, Ensayo: ens, Pieza: pza,
+                            Resultado: res, Orden: Number(r.ORDEN) || (i + 1), Fecha: r.FECHA_HORA || ""
+                        });
+                    });
+                    const regs = Array.from(mapa.values());
+                    if (!regs.length) throw new Error("La hoja Registros está vacía.");
+
+                    let est = {};
+                    if (tipo === 'Atributos') {
+                        if (!wb.Sheets['Estandar']) throw new Error("Falta la hoja Estandar (necesaria en estudios de atributos).");
+                        XLSX.utils.sheet_to_json(wb.Sheets['Estandar']).forEach(r => {
+                            const v = String(r.ESTANDAR || '').trim().toUpperCase();
+                            if (v === 'OK' || v === 'NOK') est[Number(r.MUESTRA)] = v;
+                        });
+                        if (Object.keys(est).length !== muestra) throw new Error("La hoja Estandar no coincide con el número de piezas.");
+                    }
+
+                    // Todo validado: ahora sí se reemplaza el estudio actual
+                    listaInspectores = ops;
+                    configuracion = { equipo, tipo, muestra, ensayos, visa, inspectores: ops, lsl: lslR, usl: uslR, k: kR, alfa: alfaR, planta: String(g('Planta') || '') };
+                    registros = regs;
+                    mapaEstandar = est;
+                    piezaEnEdicion = null;
+                    guardarDatos('ryr_config', configuracion);
+                    guardarDatos('ryr_registros', registros);
+                    if (tipo === 'Atributos') guardarDatos('ryr_estandar', mapaEstandar); else localStorage.removeItem('ryr_estandar');
+                    localStorage.removeItem('ryr_last_inspector');
+                    localStorage.removeItem('ryr_last_ensayo');
+            localStorage.removeItem('ryr_reporte');
+
+                    $('pantalla-config').classList.add('hidden');
+                    $('pantalla-estandar').classList.add('hidden');
+                    inicializarInterfazCaptura();
+                    toggleTipoEstudioUI(tipo);
+                    actualizarInterfazCompleta();
+                    $('pantalla-captura').classList.remove('hidden');
+                    $('pantalla-acciones').classList.remove('hidden');
+                    mostrarNotificacion(`📂 Respaldo restaurado: ${regs.length} registros. Seleccione operador para continuar.`);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } catch (err) {
+                    alert("No se pudo restaurar el respaldo:\n\n" + err.message + "\n\nNo se modificó el estudio actual.");
+                }
+            };
+            lector.readAsArrayBuffer(file);
+        }
+
+        /* ================= RESULTADOS: ATRIBUTOS (validado contra Minitab) ================= */
+        function erfcc(x) { const z = Math.abs(x), t = 1 / (1 + 0.5 * z); const r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 + t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 + t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277))))))))); return x >= 0 ? r : 2 - r; }
+        function normSf(z) { return 0.5 * erfcc(z / Math.SQRT2); }
+        function lgam(x) { const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5]; let y = x, t = x + 5.5; t -= (x + 0.5) * Math.log(t); let s = 1.000000000190015; for (let j = 0; j < 6; j++) { y += 1; s += c[j] / y; } return -t + Math.log(2.5066282746310005 * s / x); }
+        function betacf(a, b, x) {
+            const FP = 1e-300; const qab = a + b, qap = a + 1, qam = a - 1; let c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < FP) d = FP; d = 1 / d; let h = d;
+            for (let m = 1; m <= 300; m++) {
+                const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+                d = 1 + aa * d; if (Math.abs(d) < FP) d = FP; c = 1 + aa / c; if (Math.abs(c) < FP) c = FP; d = 1 / d; h *= d * c;
+                aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+                d = 1 + aa * d; if (Math.abs(d) < FP) d = FP; c = 1 + aa / c; if (Math.abs(c) < FP) c = FP; d = 1 / d;
+                const del = d * c; h *= del; if (Math.abs(del - 1) < 3e-12) break;
+            } return h;
+        }
+        function ibeta(x, a, b) { if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(lgam(a + b) - lgam(a) - lgam(b) + a * Math.log(x) + b * Math.log(1 - x)); return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b; }
+        function betaInv(p, a, b) { let lo = 0, hi = 1; for (let i = 0; i < 80; i++) { const mid = (lo + hi) / 2; if (ibeta(mid, a, b) < p) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+
+        // IC exacto binomial (Clopper-Pearson). Con 100 % Minitab usa el límite unilateral alfa^(1/n).
+        function cpExact(x, n, conf) {
+            const a = 1 - (conf || 0.95); let lo, hi;
+            if (x === n) { lo = Math.pow(a, 1 / n); hi = 1; }
+            else if (x === 0) { lo = 0; hi = 1 - Math.pow(a, 1 / n); }
+            else { lo = betaInv(a / 2, x, n - x + 1); hi = betaInv(1 - a / 2, x + 1, n - x); }
+            return [100 * lo, 100 * hi];
+        }
+
+        // Kappa de Fleiss, 2 categorías. X: filas = piezas, columnas = ensayos (1 = NOK, 0 = OK)
+        function fleissBin(X) {
+            const n = X.length, m = X[0].length; let s1 = 0, d = 0;
+            X.forEach(r => { const a = r.reduce((s, v) => s + v, 0); s1 += a; d += a * (m - a); });
+            const p = s1 / (n * m), q = 1 - p, se = Math.sqrt(2 / (n * m * (m - 1)));
+            if (p === 0 || p === 1) return { k: null, se };
+            return { k: 1 - d / (n * m * (m - 1) * p * q), se };
+        }
+
+        // Contra el estándar: kappa por ensayo (estándar = 2º ensayo), promediado; Var = suma de varianzas / m²
+        function kappaVsStd(columnas, std) {
+            const ks = [], vs = [];
+            columnas.forEach(col => { const f = fleissBin(col.map((v, i) => [v, std[i]])); ks.push(f.k); vs.push(f.se * f.se); });
+            const m = columnas.length, se = Math.sqrt(vs.reduce((a, b) => a + b, 0)) / m;
+            if (ks.some(k => k === null)) return { k: null, se };
+            return { k: ks.reduce((a, b) => a + b, 0) / m, se };
+        }
+
+        function calcularAtributos(ops, n, m, std, Y) {
+            const cols = X => Array.from({ length: X[0].length }, (_, t) => X.map(r => r[t]));
+            const igual = r => Math.min(...r) === Math.max(...r);
+            const mk = (x, nn) => { const ci = cpExact(x, nn); return { n: nn, matched: x, pct: 100 * x / nn, lo: ci[0], hi: ci[1] }; };
+            const zp = (k, se) => k === null ? { k, se, z: null, p: null } : { k, se, z: k / se, p: normSf(k / se) };
+            const nokParts = std.filter(v => v === 1).length, okParts = n - nokParts;
+            const R = { within: [], vsStd: [], aiag: [], n, m, nokParts, okParts };
+            let tot = { c: 0, t: 0, om: 0, fa: 0 };
+            ops.forEach(op => {
+                const X = Y[op], f = fleissBin(X);
+                R.within.push({ op, ...mk(X.filter(igual).length, n), ...zp(f.k, f.se) });
+                const kv = kappaVsStd(cols(X), std);
+                R.vsStd.push({
+                    op, ...mk(X.filter((r, i) => r.every(v => v === std[i])).length, n), ...zp(kv.k, kv.se),
+                    okNok: X.filter((r, i) => std[i] === 1 && r.every(v => v === 0)).length,
+                    nokOk: X.filter((r, i) => std[i] === 0 && r.every(v => v === 1)).length,
+                    mixed: X.filter(r => !igual(r)).length
+                });
+                let c = 0, om = 0, fa = 0;
+                X.forEach((r, i) => r.forEach(v => { if (v === std[i]) c++; else if (std[i] === 1) om++; else fa++; }));
+                tot.c += c; tot.t += n * m; tot.om += om; tot.fa += fa;
+                R.aiag.push({ op, c, t: n * m, om, fa, efect: 100 * c / (n * m), omision: 100 * om / (nokParts * m), falsa: 100 * fa / (okParts * m) });
+            });
+            R.aiagTotal = { op: 'TOTAL', c: tot.c, t: tot.t, om: tot.om, fa: tot.fa, efect: 100 * tot.c / tot.t, omision: 100 * tot.om / (nokParts * m * ops.length), falsa: 100 * tot.fa / (okParts * m * ops.length) };
+            const ALL = std.map((_, i) => ops.flatMap(op => Y[op][i]));
+            const fb = fleissBin(ALL), kv = kappaVsStd(cols(ALL), std);
+            R.between = { ...mk(ALL.filter(igual).length, n), ...zp(fb.k, fb.se) };
+            R.allStd = { ...mk(ALL.filter((r, i) => r.every(v => v === std[i])).length, n), ...zp(kv.k, kv.se) };
+            return R;
+        }
+
+        /* ================= RESULTADOS: PANTALLA ================= */
+        function matrizAtributos() {
+            const ops = todosOperadores(), n = configuracion.muestra, m = configuracion.ensayos;
+            const mapa = new Map(registros.map(r => [`${r.Inspector}|${r.Ensayo}|${r.Pieza}`, r.Resultado]));
+            const std = []; for (let p = 1; p <= n; p++) std.push(mapaEstandar[p] === 'NOK' ? 1 : 0);
+            const Y = {};
+            ops.forEach(op => {
+                Y[op] = [];
+                for (let p = 1; p <= n; p++) {
+                    const fila = []; for (let e = 1; e <= m; e++) fila.push(mapa.get(`${op}|${e}|${p}`) === 'NOK' ? 1 : 0);
+                    Y[op].push(fila);
+                }
+            });
+            return { ops, n, m, std, Y };
+        }
+
+        const f1 = v => v === null ? '*' : v.toFixed(1), f2 = v => v === null ? '*' : v.toFixed(2), f4 = v => v === null ? '*' : v.toFixed(4);
+        const fp = p => p === null ? '*' : (p < 0.00005 ? '0.0000' : p.toFixed(4));
+        const fci = r => `(${f2(r.lo)}, ${f2(r.hi)})`;
+        function nivel(v, verde, amar, mayor) { const bien = mayor ? v >= verde : v <= verde, med = mayor ? v >= amar : v <= amar; return bien ? 'ok' : (med ? 'mar' : 'mal'); }
+        function pill(v, verde, amar, mayor) { return `<span class="pill ${nivel(v, verde, amar, mayor)}">${f1(v)} %</span>`; }
+
+        function htmlTabla(cab, filas) {
+            return '<div style="overflow-x:auto"><table class="tbl"><thead><tr>' + cab.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>' +
+                filas.map(f => '<tr>' + f.map(c => `<td>${c}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
+        }
+
+        function svgAcuerdo(titulo, datos) {
+            const W = 340, H = 250, L = 46, Rm = 12, T = 30, B = 40, ph = H - T - B, pw = W - L - Rm;
+            const y0 = Math.max(0, Math.floor(Math.min(...datos.map(d => d.lo)) / 10) * 10);
+            const Y = v => T + ph * (1 - (v - y0) / (100 - y0));
+            let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px"><text x="${W / 2}" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">${titulo}</text>`;
+            for (let i = 0; i <= 5; i++) { const v = y0 + (100 - y0) * i / 5, y = Y(v); s += `<line x1="${L}" x2="${W - Rm}" y1="${y}" y2="${y}" stroke="#e2e8f0"/><text x="${L - 6}" y="${y + 4}" text-anchor="end" font-size="10" fill="#64748b">${v.toFixed(0)}</text>`; }
+            datos.forEach((d, i) => {
+                const x = L + pw * (i + 0.5) / datos.length;
+                s += `<line x1="${x}" x2="${x}" y1="${Y(d.hi)}" y2="${Y(d.lo)}" stroke="#2563eb" stroke-width="2"/>` +
+                    `<line x1="${x - 6}" x2="${x + 6}" y1="${Y(d.hi)}" y2="${Y(d.hi)}" stroke="#2563eb" stroke-width="2"/>` +
+                    `<line x1="${x - 6}" x2="${x + 6}" y1="${Y(d.lo)}" y2="${Y(d.lo)}" stroke="#2563eb" stroke-width="2"/>` +
+                    `<circle cx="${x}" cy="${Y(d.pct)}" r="5" fill="#dc2626"/><text x="${x + 9}" y="${Y(d.pct) + 4}" font-size="10" fill="#334155">${d.pct.toFixed(1)}</text>` +
+                    `<text x="${x}" y="${H - B + 16}" text-anchor="middle" font-size="11" fill="#334155">${esc(d.op)}</text>`;
+            });
+            return s + `<text x="${W / 2}" y="${H - 6}" text-anchor="middle" font-size="10" fill="#64748b">Evaluador</text><text transform="rotate(-90)" x="${-(T + ph / 2)}" y="12" text-anchor="middle" font-size="10" fill="#64748b">Porcentaje (IC 95 %)</text></svg>`;
+        }
+
+        function verResultados(devolver) {
+            if (configuracion.tipo === 'Variables') { return verResultadosVariables(devolver); }
+            fijarTituloResultados('Concordancia de atributos · criterios AIAG MSA 4.ª ed.');
+            const fl = faltantes();
+            if (fl.length) { alert("No se pueden calcular resultados: el estudio está incompleto (Minitab también lo requiere).\n\n" + textoFaltantes(fl)); return; }
+            const D = matrizAtributos(), R = calcularAtributos(D.ops, D.n, D.m, D.std, D.Y);
+            const cabK = ['Evaluador', '# Insp.', '# Coinc.', 'Porcentaje', 'IC 95 %', 'Kappa', 'EE Kappa', 'Z', 'P(vs&gt;0)'];
+            const filaK = r => [esc(r.op), r.n, r.matched, f1(r.pct), fci(r), f4(r.k), f4(r.se), f4(r.z), fp(r.p)];
+            const filaT = (et, r) => [et, r.n, r.matched, f1(r.pct), fci(r), f4(r.k), f4(r.se), f4(r.z), fp(r.p)];
+            const aiagFila = a => [esc(a.op), pill(a.efect, 90, 80, true) + ` <small>${a.c}/${a.t}</small>`, pill(a.omision, 2, 5, false) + ` <small>${a.om}/${R.nokParts * R.m * (a.op === 'TOTAL' ? D.ops.length : 1)}</small>`, pill(a.falsa, 5, 10, false) + ` <small>${a.fa}/${R.okParts * R.m * (a.op === 'TOTAL' ? D.ops.length : 1)}</small>`];
+            const T = R.aiagTotal, orden = { ok: 0, mar: 1, mal: 2 };
+            const peor = [nivel(T.efect, 90, 80, true), nivel(T.omision, 2, 5, false), nivel(T.falsa, 5, 10, false)].sort((a, b) => orden[b] - orden[a])[0];
+            const txtV = { ok: '✅ SISTEMA DE MEDICIÓN ACEPTABLE (criterios AIAG)', mar: '⚠️ MARGINAL: puede ser aceptable según la aplicación y el costo', mal: '❌ NO ACEPTABLE: requiere mejora' }[peor];
+
+            let h = `<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">${esc(configuracion.equipo)} · ${D.n} piezas (${R.nokParts} NOK / ${R.okParts} OK) · ${D.ops.length} evaluadores · ${D.m} ensayos · confianza 95 %</p>`;
+            h += '<!--VERED-->' + `<div class="veredicto ${peor}">${txtV}</div>` + '<!--FINVERED-->';
+            h += `<h3 class="res-h">Indicadores AIAG (por decisión individual)</h3>` + htmlTabla(['Evaluador', 'Efectividad', 'Omisión (NOK→OK)', 'Falsa alarma (OK→NOK)'], R.aiag.map(aiagFila).concat([aiagFila(T)]));
+            h += `<p class="res-nota">Criterios: efectividad ≥90 % aceptable (80–90 % marginal); omisión ≤2 % (≤5 % marginal); falsa alarma ≤5 % (≤10 % marginal). Se calculan sobre cada decisión, a diferencia del % por pieza de Minitab.</p>`;
+            h += `<h3 class="res-h">Dentro de evaluadores</h3>` + htmlTabla(cabK, R.within.map(filaK));
+            h += `<p class="res-nota"># Coinc.: el evaluador coincide consigo mismo en todos los ensayos.</p>`;
+            h += `<h3 class="res-h">Cada evaluador vs estándar</h3>` + htmlTabla(cabK, R.vsStd.map(filaK));
+            h += htmlTabla(['Evaluador', '# OK/NOK', '%', '# NOK/OK', '%', '# Mixtos', '%'], R.vsStd.map(r => [esc(r.op), r.okNok, f1(100 * r.okNok / R.nokParts), r.nokOk, f1(100 * r.nokOk / R.okParts), r.mixed, f1(100 * r.mixed / R.n)]));
+            h += `<p class="res-nota"># OK/NOK: ensayos todos OK con estándar NOK. # NOK/OK: todos NOK con estándar OK. # Mixtos: ensayos no idénticos. Con dos categorías, el Kappa es el mismo para OK y NOK.</p>`;
+            h += `<h3 class="res-h">Entre evaluadores</h3>` + htmlTabla(cabK.slice(1), [filaT('', R.between).slice(1)]);
+            h += `<h3 class="res-h">Todos los evaluadores vs estándar</h3>` + htmlTabla(cabK.slice(1), [filaT('', R.allStd).slice(1)]);
+            h += `<h3 class="res-h">Gráficas de concordancia</h3>` + envolverGraficas([svgAcuerdo('Dentro de evaluadores', R.within), svgAcuerdo('Evaluador vs estándar', R.vsStd)], 'graficas');
+            if (devolver) return { h, peor, txtV, R };
+            $('res-contenido').innerHTML = h;
+            llenarEncabezadoImpresion();
+            $('modal-resultados').classList.remove('hidden');
+        }
+        function fijarTituloResultados(sub) {
+            $('res-titulo').textContent = 'Resultado R&R ' + configuracion.equipo;
+            $('res-subtitulo').textContent = sub;
+        }
+
+        function llenarEncabezadoImpresion() {
+            const d = new Date();
+            const fecha = d.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' }) + ' ' + d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+            $('res-print-head').innerHTML = `<div class="ph-fila"><img src="${$('logo-marca').src}" alt="Fischer"><div class="ph-txt"><strong>${esc($('res-titulo').textContent)}</strong><span>${esc($('res-subtitulo').textContent)}</span></div></div>` +
+                `<div class="ph-meta"><span>Administrador: <b>${esc(configuracion.visa)}</b></span><span>Emitido: <b>${esc(fecha)}</b></span></div>`;
+            $('res-print-pie').textContent = 'Generado con Fischer MSA Studio · ' + fecha;
+        }
+
+        // Abre el cuadro de impresión del navegador: elegir "Guardar como PDF". El nombre del archivo se propone solo.
+        function guardarResultadosPDF() {
+            const tituloPrevio = document.title;
+            document.title = 'Resultado R&R ' + String(configuracion.equipo).replace(/[\\/:*?"<>|]+/g, '-');
+            document.body.classList.add('imp-res');
+            const restaurar = () => { document.title = tituloPrevio; document.body.classList.remove('imp-res'); window.removeEventListener('afterprint', restaurar); };
+            window.addEventListener('afterprint', restaurar);
+            window.print();
+        }
+
+        let _grafActuales = [], _gi = 0;
+        function envolverGraficas(lista, clase) {
+            _grafActuales = lista;
+            return `<p class="res-nota no-print">Toque una gráfica para verla en grande.</p><div class="${clase}">` +
+                lista.map((s, i) => `<div class="graf-item" onclick="verGrafica(${i})" title="Clic para ampliar">${s}<span class="graf-zoom no-print">Ampliar</span></div>`).join('') + '</div>';
+        }
+        function verGrafica(i) { _gi = i; $('graf-visor').innerHTML = _grafActuales[i]; $('modal-grafica').classList.remove('hidden'); }
+        function navGrafica(d) { if (!_grafActuales.length) return; verGrafica((_gi + d + _grafActuales.length) % _grafActuales.length); }
+        function cerrarGrafica() { $('modal-grafica').classList.add('hidden'); }
+
+        function cerrarResultados() { $('modal-resultados').classList.add('hidden'); }
+
+        /* ================= RESULTADOS: VARIABLES (Gage R&R cruzado, ANOVA) ================= */
+        function pValorF(F, df1, df2) {
+            if (F === null || !isFinite(F)) return F === Infinity ? 0 : null;
+            return ibeta(df2 / (df2 + df1 * F), df2 / 2, df1 / 2);
+        }
+
+        // datos: [{op, pieza, y}]  opciones: {k: multiplicador (6 por defecto), alfa: 0.05, tol: tolerancia total o null}
+        function calcularVariables(datos, opciones) {
+            const o = Object.assign({ k: 6, alfa: 0.05, tol: null }, opciones || {});
+            const ops = [...new Set(datos.map(d => d.op))], piezas = [...new Set(datos.map(d => d.pieza))];
+            const P = piezas.length, O = ops.length;
+            const celdas = {};
+            datos.forEach(d => { const k = d.op + '|' + d.pieza; (celdas[k] = celdas[k] || []).push(d.y); });
+            const R = Object.values(celdas).map(a => a.length);
+            const r = R[0];
+            if (Object.keys(celdas).length !== P * O || R.some(v => v !== r)) throw new Error("Diseño no balanceado: todas las combinaciones pieza-operador deben tener el mismo número de mediciones.");
+            const media = a => a.reduce((s, v) => s + v, 0) / a.length;
+            const gm = media(datos.map(d => d.y));
+            const mP = {}, mO = {}, mC = {};
+            piezas.forEach(p => mP[p] = media(datos.filter(d => d.pieza === p).map(d => d.y)));
+            ops.forEach(op => mO[op] = media(datos.filter(d => d.op === op).map(d => d.y)));
+            Object.keys(celdas).forEach(k => mC[k] = media(celdas[k]));
+            let SSp = 0, SSo = 0, SSpo = 0, SSe = 0, SSt = 0;
+            piezas.forEach(p => SSp += O * r * (mP[p] - gm) ** 2);
+            ops.forEach(op => SSo += P * r * (mO[op] - gm) ** 2);
+            piezas.forEach(p => ops.forEach(op => { SSpo += r * (mC[op + '|' + p] - mP[p] - mO[op] + gm) ** 2; }));
+            datos.forEach(d => { SSe += (d.y - mC[d.op + '|' + d.pieza]) ** 2; SSt += (d.y - gm) ** 2; });
+            if (Math.abs(SSpo) < 1e-12 * SSt) SSpo = 0;            // ruido numérico: la interacción es nula
+            const df = { p: P - 1, o: O - 1, po: (P - 1) * (O - 1), e: P * O * (r - 1), t: P * O * r - 1 };
+            const ms = { p: SSp / df.p, o: SSo / df.o, po: SSpo / df.po, e: SSe / df.e };
+            const div = (a, b) => b === 0 ? (a === 0 ? null : Infinity) : a / b;
+            const conInter = [
+                { fuente: 'Pieza', df: df.p, ss: SSp, ms: ms.p, F: div(ms.p, ms.po), p: null },
+                { fuente: 'Operador', df: df.o, ss: SSo, ms: ms.o, F: div(ms.o, ms.po), p: null },
+                { fuente: 'Pieza * Operador', df: df.po, ss: SSpo, ms: ms.po, F: div(ms.po, ms.e), p: null },
+                { fuente: 'Repetibilidad', df: df.e, ss: SSe, ms: ms.e, F: null, p: null },
+                { fuente: 'Total', df: df.t, ss: SSt, ms: null, F: null, p: null }];
+            conInter[0].p = pValorF(conInter[0].F, df.p, df.po); conInter[1].p = pValorF(conInter[1].F, df.o, df.po); conInter[2].p = pValorF(conInter[2].F, df.po, df.e);
+            const pInter = conInter[2].p;
+            const quitar = pInter > o.alfa;
+            let sinInter = null, vrep, vpo, vop, vpart;
+            if (quitar) {
+                const dfe2 = df.po + df.e, mse2 = (SSpo + SSe) / dfe2;
+                sinInter = [
+                    { fuente: 'Pieza', df: df.p, ss: SSp, ms: ms.p, F: div(ms.p, mse2), p: null },
+                    { fuente: 'Operador', df: df.o, ss: SSo, ms: ms.o, F: div(ms.o, mse2), p: null },
+                    { fuente: 'Repetibilidad', df: dfe2, ss: SSpo + SSe, ms: mse2, F: null, p: null },
+                    { fuente: 'Total', df: df.t, ss: SSt, ms: null, F: null, p: null }];
+                sinInter[0].p = pValorF(sinInter[0].F, df.p, dfe2); sinInter[1].p = pValorF(sinInter[1].F, df.o, dfe2);
+                vrep = mse2; vpo = 0;
+                vop = Math.max(0, (ms.o - mse2) / (P * r)); vpart = Math.max(0, (ms.p - mse2) / (O * r));
+            } else {
+                vrep = ms.e; vpo = Math.max(0, (ms.po - ms.e) / r);
+                vop = Math.max(0, (ms.o - ms.po) / (P * r)); vpart = Math.max(0, (ms.p - ms.po) / (O * r));
+            }
+            const vrepro = vop + vpo, vgrr = vrep + vrepro, vtot = vgrr + vpart;
+            const fila = (fuente, v, nivel) => {
+                const sd = Math.sqrt(v);
+                return { fuente, nivel, var: v, contrib: 100 * v / vtot, sd, sv: o.k * sd, pctSV: 100 * sd / Math.sqrt(vtot), pctTol: o.tol ? 100 * o.k * sd / o.tol : null };
+            };
+            const comp = [fila('Gage R&R total', vgrr, 0), fila('Repetibilidad', vrep, 1), fila('Reproducibilidad', vrepro, 1), fila('Operador', vop, 2)];
+            if (!quitar) comp.push(fila('Pieza * Operador', vpo, 2));
+            comp.push(fila('Parte a parte', vpart, 0), fila('Variación total', vtot, 0));
+            const ndc = vgrr > 0 ? Math.floor(1.41 * Math.sqrt(vpart) / Math.sqrt(vgrr)) : null;
+            return { P, O, r, n: datos.length, ops, piezas, k: o.k, alfa: o.alfa, tol: o.tol, pInter, interaccionQuitada: quitar, conInter, sinInter, comp, ndc, ndcSinTruncar: vgrr > 0 ? 1.41 * Math.sqrt(vpart) / Math.sqrt(vgrr) : null, medias: { ops: mO, piezas: mP, celdas: mC }, celdas };
+        }
+
+        /* ---- Cartas R y Xbarra por operador (constantes SPC por tamaño de subgrupo = nº de ensayos) ---- */
+        const D2_SPC = { 2: 1.128, 3: 1.693, 4: 2.059, 5: 2.326, 6: 2.534, 7: 2.704, 8: 2.847, 9: 2.970, 10: 3.078 };
+        const D3_SPC = { 2: 0.8525, 3: 0.8884, 4: 0.8798, 5: 0.8641, 6: 0.8480, 7: 0.8332, 8: 0.8198, 9: 0.8078, 10: 0.7971 };
+        const CTES_SPC = {};
+        Object.keys(D2_SPC).forEach(n => { const d2 = D2_SPC[n], d3 = D3_SPC[n]; CTES_SPC[n] = { A2: 3 / (d2 * Math.sqrt(n)), D3: Math.max(0, 1 - 3 * d3 / d2), D4: 1 + 3 * d3 / d2 }; });
+
+        function datosCartasVariables(R, ordenOps) {
+            const c = CTES_SPC[R.r], rangos = [], medias = [];
+            (ordenOps || R.ops).forEach(op => R.piezas.forEach(p => {
+                const a = R.celdas[op + '|' + p];
+                rangos.push({ op, pieza: p, v: Math.max(...a) - Math.min(...a) });
+                medias.push({ op, pieza: p, v: a.reduce((s, v) => s + v, 0) / a.length });
+            }));
+            const rbar = rangos.reduce((s, x) => s + x.v, 0) / rangos.length, gm = medias.reduce((s, x) => s + x.v, 0) / medias.length;
+            return { rangos, medias, rbar, gm, uclR: c ? c.D4 * rbar : null, lclR: c ? c.D3 * rbar : null, uclX: c ? gm + c.A2 * rbar : null, lclX: c ? gm - c.A2 * rbar : null };
+        }
+
+        /* ================= RESULTADOS: VARIABLES (pantalla y gráficas) ================= */
+        const COL_OPS = ['#005CAB', '#D9480F', '#2F9E44', '#862E9C', '#C2255C', '#0C8599', '#5C940D', '#E67700', '#495057', '#7048E8'];
+        const decAuto = (lo, hi) => { const d = hi - lo; const n = d < 0.05 ? 4 : d < 0.5 ? 3 : d < 5 ? 2 : d < 50 ? 1 : 0; return v => v.toFixed(n); };
+        const margenY = (min, max, pad) => { const d = (max - min) || Math.abs(max) * 0.1 || 1; return [min - d * pad, max + d * pad]; };
+        const mediaV = a => a.reduce((s, v) => s + v, 0) / a.length;
+        const cuantil = (a, p) => { const n = a.length, pos = p * (n + 1); if (pos < 1) return a[0]; if (pos >= n) return a[n - 1]; const i = Math.floor(pos); return a[i - 1] + (pos - i) * (a[i] - a[i - 1]); };
+
+        function marcoSVG(titulo, y0, y1, fmt, B, Rmx) {
+            const W = 420, H = 270, L = 54, T = 32, Rm = Rmx || 14; B = B || 44;
+            const pw = W - L - Rm, ph = H - T - B, Y = v => T + ph * (1 - (v - y0) / (y1 - y0));
+            let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%"><rect x="0.5" y="0.5" width="${W - 1}" height="${H - 1}" fill="#fff" stroke="#E3E8EF" rx="8"/><text x="${W / 2}" y="19" text-anchor="middle" font-size="12" font-weight="700" fill="#00457F">${titulo}</text>`;
+            for (let i = 0; i <= 4; i++) { const v = y0 + (y1 - y0) * i / 4, y = Y(v); s += `<line x1="${L}" x2="${W - Rm}" y1="${y}" y2="${y}" stroke="#EEF1F6"/><text x="${L - 6}" y="${y + 3.5}" text-anchor="end" font-size="9.5" fill="#667085">${fmt(v)}</text>`; }
+            return { s, Y, L, T, W, H, pw, ph, Rm };
+        }
+        const txtX = (m, x, y, t, extra) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="9.5" fill="#334155" ${extra || ''}>${t}</text>`;
+
+        function svgComponentes(R) {
+            const cat = [['Gage R&amp;R', 'Gage R&R total'], ['Repetib.', 'Repetibilidad'], ['Reprod.', 'Reproducibilidad'], ['Parte a parte', 'Parte a parte']];
+            const f = Object.fromEntries(R.comp.map(c => [c.fuente, c]));
+            const series = [['% Contribución', '#005CAB', c => c.contrib], ['% Var. estudio', '#F08C00', c => c.pctSV]];
+            if (R.tol) series.push(['% Tolerancia', '#6B7A90', c => c.pctTol]);
+            const top = Math.ceil(Math.max(100, ...cat.flatMap(([, k]) => series.map(sr => sr[2](f[k])))) / 20) * 20;
+            const m = marcoSVG('Componentes de la variación', 0, top, v => v.toFixed(0), 56);
+            let s = m.s; const gw = m.pw / cat.length, bw = Math.min(22, gw / (series.length + 0.8));
+            cat.forEach(([lab, k], i) => {
+                const x0 = m.L + gw * i + (gw - bw * series.length) / 2;
+                series.forEach((sr, j) => { const y = m.Y(sr[2](f[k])); s += `<rect x="${x0 + j * bw}" y="${y}" width="${bw - 2}" height="${Math.max(0, m.Y(0) - y)}" fill="${sr[1]}"/>`; });
+                s += txtX(m, m.L + gw * i + gw / 2, m.T + m.ph + 14, lab);
+            });
+            series.forEach((sr, j) => { const lx = m.L + j * 100; s += `<rect x="${lx}" y="${m.H - 15}" width="9" height="9" fill="${sr[1]}"/><text x="${lx + 13}" y="${m.H - 7}" font-size="9.5" fill="#334155">${sr[0]}</text>`; });
+            return s + '</svg>';
+        }
+
+        function svgCarta(titulo, pts, ops, P, cl, lclM, ucl, lcl, etCL) {
+            const vals = pts.map(p => p.v).concat([cl, ucl], lcl === null ? [] : [lcl]);
+            const [y0, y1] = margenY(Math.min(...vals), Math.max(...vals), 0.08), fmt = decAuto(y0, y1);
+            const m = marcoSVG(titulo, y0, y1, fmt, 34, 86); let s = m.s; const bw = m.pw / ops.length;
+            ops.forEach((op, i) => {
+                const x = m.L + bw * i;
+                if (i > 0) s += `<line x1="${x}" x2="${x}" y1="${m.T}" y2="${m.T + m.ph}" stroke="#CBD5E1" stroke-dasharray="3 3"/>`;
+                s += txtX(m, x + bw / 2, m.T + m.ph + 14, esc(op), 'font-weight="700"');
+            });
+            const X = i => m.L + bw * Math.floor(i / P) + bw * ((i % P) + 0.5) / P;
+            const linea = (v, col, dash) => `<line x1="${m.L}" x2="${m.W - m.Rm}" y1="${m.Y(v)}" y2="${m.Y(v)}" stroke="${col}" stroke-width="1.3" ${dash ? 'stroke-dasharray="5 3"' : ''}/>`;
+            s += linea(ucl, '#C62F2A', true) + (lcl !== null ? linea(lcl, '#C62F2A', true) : '') + linea(cl, '#2F9E44', false);
+            // Etiquetas en el margen derecho, separadas entre sí (los límites suelen quedar muy juntos) y con 4 decimales
+            const et = [{ v: ucl, col: '#C62F2A', t: 'LSC' }, { v: cl, col: '#2F9E44', t: etCL }].concat(lcl !== null ? [{ v: lcl, col: '#C62F2A', t: 'LIC' }] : []);
+            et.forEach(e => { e.y0 = m.Y(e.v); });
+            et.sort((p, q) => p.y0 - q.y0);
+            let ys = et.map(e => e.y0);
+            for (let i = 1; i < ys.length; i++) if (ys[i] - ys[i - 1] < 13) ys[i] = ys[i - 1] + 13;
+            const desv = et.reduce((acc, e) => acc + e.y0, 0) / et.length - ys.reduce((acc, y) => acc + y, 0) / ys.length;
+            ys = ys.map(y => Math.min(Math.max(y + desv, m.T + 6), m.T + m.ph - 2));
+            et.forEach((e, i) => {
+                s += `<polyline fill="none" stroke="${e.col}" stroke-width="0.9" points="${m.W - m.Rm},${e.y0} ${m.W - m.Rm + 7},${ys[i]}"/>` +
+                    `<text x="${m.W - m.Rm + 9}" y="${ys[i] + 3}" font-size="9.5" font-weight="700" fill="${e.col}">${e.t}=${e.v.toFixed(4)}</text>`;
+            });
+            ops.forEach((op, b) => {
+                const seg = pts.slice(b * P, b * P + P);
+                s += `<polyline fill="none" stroke="#005CAB" stroke-width="1.2" points="${seg.map((p, k) => `${X(b * P + k)},${m.Y(p.v)}`).join(' ')}"/>`;
+            });
+            pts.forEach((p, i) => { const fuera = p.v > ucl || (lcl !== null && p.v < lcl); s += `<circle cx="${X(i)}" cy="${m.Y(p.v)}" r="${fuera ? 3.4 : 2.4}" fill="${fuera ? '#C62F2A' : '#005CAB'}"/>`; });
+            return s + '</svg>';
+        }
+
+        function svgPorPieza(R) {
+            const todos = Object.values(R.celdas).flat();
+            const [y0, y1] = margenY(Math.min(...todos), Math.max(...todos), 0.08), fmt = decAuto(y0, y1);
+            const m = marcoSVG('Medición por pieza', y0, y1, fmt, 34); let s = m.s;
+            const X = i => m.L + m.pw * (i + 0.5) / R.piezas.length, cada = Math.ceil(R.piezas.length / 12);
+            const medias = R.piezas.map(p => mediaV(R.ops.flatMap(op => R.celdas[op + '|' + p])));
+            R.piezas.forEach((p, i) => {
+                R.ops.forEach(op => R.celdas[op + '|' + p].forEach(v => { s += `<circle cx="${X(i)}" cy="${m.Y(v)}" r="2.2" fill="none" stroke="#6B7A90" stroke-width="0.9"/>`; }));
+                if (i % cada === 0) s += txtX(m, X(i), m.T + m.ph + 14, p);
+            });
+            s += `<polyline fill="none" stroke="#005CAB" stroke-width="1.3" points="${medias.map((v, i) => `${X(i)},${m.Y(v)}`).join(' ')}"/>`;
+            medias.forEach((v, i) => { s += `<circle cx="${X(i)}" cy="${m.Y(v)}" r="3" fill="#C62F2A"/>`; });
+            return s + txtX(m, m.L + m.pw / 2, m.H - 6, 'Pieza') + '</svg>';
+        }
+
+        function svgPorOperador(R, ops) {
+            const todos = Object.values(R.celdas).flat();
+            const [y0, y1] = margenY(Math.min(...todos), Math.max(...todos), 0.08), fmt = decAuto(y0, y1);
+            const m = marcoSVG('Medición por operador', y0, y1, fmt, 34); let s = m.s; const bw = m.pw / ops.length;
+            ops.forEach((op, i) => {
+                const a = R.piezas.flatMap(p => R.celdas[op + '|' + p]).sort((u, v) => u - v);
+                const q1 = cuantil(a, 0.25), q2 = cuantil(a, 0.5), q3 = cuantil(a, 0.75), iqr = q3 - q1;
+                const lo = a.find(v => v >= q1 - 1.5 * iqr), hi = [...a].reverse().find(v => v <= q3 + 1.5 * iqr);
+                const cx = m.L + bw * (i + 0.5), w = Math.min(34, bw * 0.5);
+                s += `<line x1="${cx}" x2="${cx}" y1="${m.Y(hi)}" y2="${m.Y(lo)}" stroke="#334155"/><rect x="${cx - w / 2}" y="${m.Y(q3)}" width="${w}" height="${Math.max(1, m.Y(q1) - m.Y(q3))}" fill="#DCE8F5" stroke="#005CAB"/>` +
+                    `<line x1="${cx - w / 2}" x2="${cx + w / 2}" y1="${m.Y(q2)}" y2="${m.Y(q2)}" stroke="#005CAB" stroke-width="2"/>`;
+                a.filter(v => v < lo || v > hi).forEach(v => { s += `<text x="${cx}" y="${m.Y(v) + 3}" text-anchor="middle" font-size="11" fill="#C62F2A">*</text>`; });
+                const mm = mediaV(a); s += `<circle cx="${cx}" cy="${m.Y(mm)}" r="3.6" fill="#fff" stroke="#C62F2A" stroke-width="1.3"/><path d="M${cx - 3.6} ${m.Y(mm)}h7.2M${cx} ${m.Y(mm) - 3.6}v7.2" stroke="#C62F2A" stroke-width="1"/>` + txtX(m, cx, m.T + m.ph + 14, esc(op), 'font-weight="700"');
+            });
+            return s + '</svg>';
+        }
+
+        function svgInteraccion(R, ops) {
+            const mu = ops.map(op => R.piezas.map(p => mediaV(R.celdas[op + '|' + p])));
+            const [y0, y1] = margenY(Math.min(...mu.flat()), Math.max(...mu.flat()), 0.08), fmt = decAuto(y0, y1);
+            const m = marcoSVG('Interacción pieza × operador', y0, y1, fmt, 46); let s = m.s;
+            const X = i => m.L + m.pw * (i + 0.5) / R.piezas.length, cada = Math.ceil(R.piezas.length / 12);
+            R.piezas.forEach((p, i) => { if (i % cada === 0) s += txtX(m, X(i), m.T + m.ph + 14, p); });
+            ops.forEach((op, j) => {
+                const col = COL_OPS[j % COL_OPS.length];
+                s += `<polyline fill="none" stroke="${col}" stroke-width="1.4" points="${mu[j].map((v, i) => `${X(i)},${m.Y(v)}`).join(' ')}"/>`;
+                mu[j].forEach((v, i) => { s += `<circle cx="${X(i)}" cy="${m.Y(v)}" r="2.3" fill="${col}"/>`; });
+                const lx = m.L + j * 62; s += `<line x1="${lx}" x2="${lx + 12}" y1="${m.H - 11}" y2="${m.H - 11}" stroke="${col}" stroke-width="2"/><text x="${lx + 16}" y="${m.H - 7.5}" font-size="9.5" fill="#334155">${esc(op)}</text>`;
+            });
+            return s + txtX(m, m.L + m.pw / 2, m.T + m.ph + 27, 'Pieza') + '</svg>';
+        }
+
+        const g5 = v => (v === null || v === undefined) ? '*' : (Math.abs(v) < 1e-12 ? '0.00000' : v.toFixed(5));
+        const g2 = v => (v === null || v === undefined) ? '' : v.toFixed(2);
+        const gF = (f, fuente) => (fuente === 'Repetibilidad' || fuente === 'Total') ? '' : (f !== null && isFinite(f) ? f.toFixed(3) : '*');
+        const gP = (p, f, fuente) => (fuente === 'Repetibilidad' || fuente === 'Total') ? '' : (p === null || f === null || !isFinite(f) ? '*' : (p < 0.0005 ? '0.000' : p.toFixed(3)));
+
+        function verResultadosVariables(devolver) {
+            const fl = faltantes();
+            if (fl.length) { alert("No se pueden calcular resultados: el estudio está incompleto (Minitab también lo requiere).\n\n" + textoFaltantes(fl)); return; }
+            const ops = todosOperadores(), nP = configuracion.muestra, nE = configuracion.ensayos;
+            const piezas = Array.from({ length: nP }, (_, i) => i + 1);
+            const mapa = new Map(registros.map(r => [`${r.Inspector}|${r.Ensayo}|${r.Pieza}`, Number(r.Resultado)]));
+            const datos = [];
+            ops.forEach(op => piezas.forEach(p => { for (let e = 1; e <= nE; e++) datos.push({ op, pieza: p, y: mapa.get(`${op}|${e}|${p}`) }); }));
+            const tolOK = configuracion.lsl !== null && configuracion.lsl !== undefined && configuracion.usl !== null && configuracion.usl !== undefined;
+            const k = configuracion.k || 6, alfa = configuracion.alfa || 0.05;
+            let R; try { R = calcularVariables(datos, { k, alfa, tol: tolOK ? configuracion.usl - configuracion.lsl : null }); } catch (e) { alert(e.message); return; }
+            const opsOrd = [...ops].sort((a, b) => a.localeCompare(b));      // Minitab ordena los operadores alfabéticamente en las cartas
+            const C = datosCartasVariables(R, opsOrd);
+            const grr = R.comp[0];
+            const nvSV = nivel(grr.pctSV, 10, 30, false), nvTol = R.tol ? nivel(grr.pctTol, 10, 30, false) : 'ok', nvNdc = R.ndc >= 5 ? 'ok' : 'mal';
+            const orden = { ok: 0, mar: 1, mal: 2 }, peor = [nvSV, nvTol, nvNdc].sort((a, b) => orden[b] - orden[a])[0];
+            const txtV = { ok: '✅ SISTEMA DE MEDICIÓN ACEPTABLE (criterios AIAG)', mar: '⚠️ CONDICIONALMENTE ACEPTABLE: depende de la aplicación y del costo', mal: '❌ NO ACEPTABLE: requiere mejora' }[peor];
+            const pl = (v, nv, suf) => `<span class="pill ${nv}">${v.toFixed(2)}${suf}</span>`;
+
+            let h = `<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">${esc(configuracion.equipo)} · ${nP} piezas · ${ops.length} operadores · ${nE} ensayos · ANOVA · variación del estudio = ${k} DE · alfa interacción = ${alfa}${R.tol ? ` · tolerancia = ${R.tol.toFixed(4).replace(/\.?0+$/, '')} (LSL ${configuracion.lsl}, USL ${configuracion.usl})` : ' · sin tolerancia'}</p>`;
+            h += '<!--VERED-->' + `<div class="veredicto ${peor}">${txtV}</div>` + '<!--FINVERED-->';
+            const ind = [['%GRR (variación del estudio)', pl(grr.pctSV, nvSV, ' %'), '< 10 % aceptable · 10–30 % condicional · > 30 % no aceptable']];
+            if (R.tol) ind.push(['%GRR (tolerancia)', pl(grr.pctTol, nvTol, ' %'), 'mismos límites']);
+            ind.push(['%Contribución del GRR', grr.contrib.toFixed(2) + ' %', 'referencia'], ['ndc (categorías distintas)', `<span class="pill ${nvNdc}">${R.ndc}</span>`, '≥ 5 adecuado']);
+            h += `<h3 class="res-h">Indicadores AIAG</h3>` + htmlTabla(['Indicador', 'Valor', 'Criterio'], ind);
+
+            const filaA = r => [esc(r.fuente), r.df, g5(r.ss), r.ms === null ? '' : g5(r.ms), gF(r.F, r.fuente), gP(r.p, r.F, r.fuente)];
+            const cabA = ['Fuente', 'GL', 'SC', 'MC', 'F', 'P'];
+            h += `<h3 class="res-h">ANOVA bidireccional con interacción</h3>` + htmlTabla(cabA, R.conInter.map(filaA));
+            h += `<p class="res-nota">Valor p de la interacción pieza × operador = ${R.pInter < 0.0005 ? '0.000' : R.pInter.toFixed(3)}. Con alfa = ${alfa}, la interacción se ${R.interaccionQuitada ? 'ELIMINA del modelo' : 'CONSERVA en el modelo'}.</p>`;
+            if (R.sinInter) h += `<h3 class="res-h">ANOVA bidireccional sin interacción</h3>` + htmlTabla(cabA, R.sinInter.map(filaA));
+            h += `<h3 class="res-h">Componentes de la varianza</h3>` + htmlTabla(['Fuente', 'CompVar', '% Contribución'], R.comp.map(c => ['&nbsp;'.repeat(c.nivel * 3) + esc(c.fuente), g5(c.var), c.contrib.toFixed(2)]));
+            h += `<h3 class="res-h">Evaluación del sistema de medición</h3>` + htmlTabla(['Fuente', 'Desv.Est. (DE)', `Var. estudio (${k} × DE)`, '% Var. estudio'].concat(R.tol ? ['% Tolerancia'] : []),
+                R.comp.map(c => ['&nbsp;'.repeat(c.nivel * 3) + esc(c.fuente), g5(c.sd), g5(c.sv), c.pctSV.toFixed(2)].concat(R.tol ? [c.pctTol.toFixed(2)] : [])));
+            h += `<p class="res-nota">Número de categorías distintas = ${R.ndc} (1.41 × DE parte a parte / DE Gage R&amp;R, truncado). Los componentes de varianza negativos se toman como cero.</p>`;
+
+            const gr = [svgComponentes(R),
+                svgCarta('Carta R por operador', C.rangos, opsOrd, nP, C.rbar, null, C.uclR, C.lclR, 'R̄'),
+                svgPorPieza(R),
+                svgCarta('Carta X̄ por operador', C.medias, opsOrd, nP, C.gm, null, C.uclX, C.lclX, 'X̿'),
+                svgPorOperador(R, opsOrd), svgInteraccion(R, opsOrd)];
+            h += `<h3 class="res-h">Gráficas del estudio Gage R&amp;R</h3>` + envolverGraficas(gr, 'graficas rejilla');
+            fijarTituloResultados('Gage R&R de variables (ANOVA) · criterios AIAG MSA 4.ª ed.');
+            if (devolver) return { h, peor, txtV, R };
+            $('res-contenido').innerHTML = h;
+            llenarEncabezadoImpresion();
+            $('modal-resultados').classList.remove('hidden');
+        }
+
+        /* ================= REPORTE OFICIAL (MSA / AIAG / IATF 16949) ================= */
+        const VERSION_APP = '1.0';
+
+        // SHA-256 (síncrono, sin dependencias) para la huella de integridad de los datos
+        function sha256Hex(texto) {
+            const bytes = Array.from(unescape(encodeURIComponent(texto))).map(ch => ch.charCodeAt(0));
+            const primos = []; for (let n = 2; primos.length < 64; n++) if (primos.every(p => n % p)) primos.push(n);
+            const K = primos.map(p => Math.floor((Math.cbrt(p) % 1) * 4294967296));
+            let H = primos.slice(0, 8).map(p => Math.floor((Math.sqrt(p) % 1) * 4294967296));
+            const bits = bytes.length * 8; bytes.push(0x80); while (bytes.length % 64 !== 56) bytes.push(0);
+            for (let i = 7; i >= 0; i--) bytes.push(i >= 4 ? 0 : (bits >>> (i * 8)) & 255);
+            const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+            for (let o = 0; o < bytes.length; o += 64) {
+                const w = new Array(64);
+                for (let i = 0; i < 16; i++) w[i] = ((bytes[o + 4 * i] << 24) | (bytes[o + 4 * i + 1] << 16) | (bytes[o + 4 * i + 2] << 8) | bytes[o + 4 * i + 3]) >>> 0;
+                for (let i = 16; i < 64; i++) {
+                    const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3), s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+                    w[i] = (w[i - 16] + s0 + w[i - 7] + s1) >>> 0;
+                }
+                let [a, b, c, d, e, f, g, h] = H;
+                for (let i = 0; i < 64; i++) {
+                    const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25), ch = (e & f) ^ (~e & g), t1 = (h + S1 + ch + K[i] + w[i]) >>> 0;
+                    const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22), maj = (a & b) ^ (a & c) ^ (b & c), t2 = (S0 + maj) >>> 0;
+                    h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+                }
+                H = [H[0] + a, H[1] + b, H[2] + c, H[3] + d, H[4] + e, H[5] + f, H[6] + g, H[7] + h].map(v => v >>> 0);
+            }
+            return H.map(v => v.toString(16).padStart(8, '0')).join('');
+        }
+
+        function huellaEstudio() {
+            const cab = [configuracion.tipo, configuracion.equipo, configuracion.muestra, configuracion.ensayos].join('|');
+            const cmp = (a, b) => a < b ? -1 : a > b ? 1 : 0;
+            const filas = [...registros].sort((a, b) => cmp(a.Inspector, b.Inspector) || a.Ensayo - b.Ensayo || a.Pieza - b.Pieza).map(r => [r.Inspector, r.Ensayo, r.Pieza, r.Resultado].join('|'));
+            const std = configuracion.tipo === 'Atributos' ? Object.keys(mapaEstandar).map(Number).sort((a, b) => a - b).map(p => 'STD|' + p + '|' + mapaEstandar[p]) : [];
+            return sha256Hex([cab].concat(filas, std).join('\n'));
+        }
+
+        // [clave, etiqueta, tipo, valor por defecto, ayuda (ícono "i"), fijo (no editable)]
+        const CAMPOS_REPORTE = [
+            ['folio', 'Folio', 'text', 'RR-' + new Date().getFullYear() + '-0001', 'Número consecutivo del reporte. Cuando exista la base de datos de reportes se asignará de forma automática; por ahora es un valor ilustrativo y no se puede editar.', true],
+            ['codigo', 'Código de formato', 'text', 'FO-CAL-001', 'Código del formato con el que el área de SGC controla este reporte. Es fijo; por ahora es un valor ilustrativo que SGC definirá.', true],
+            ['revision', 'Revisión', 'text', '00', 'Número de revisión vigente del formato. Ejemplo: 00, 01, 02.'],
+            ['caracteristica', 'Característica medida', 'text', '', 'Dimensión o atributo que se evalúa con el equipo. Ejemplo: altura total, diámetro interior, ajuste de la pieza.'],
+            ['unidad', 'Unidad de medida', 'text', '', 'Unidad en la que se registran las mediciones. Ejemplo: mm, g, N·m. En estudios de atributos puede dejarse en blanco.'],
+            ['parte', 'Nº de parte / cliente', 'text', '', 'Número de parte y cliente al que pertenece la característica medida. Ejemplo: 12345-A / Cliente X.'],
+            ['resolucion', 'Resolución del instrumento', 'text', '', 'Mínima división que distingue el instrumento. Ejemplo: 0.01 mm. Como referencia, debería ser como máximo 1/10 de la tolerancia.'],
+            ['calibracion', 'Calibración vigente (ID y fecha)', 'text', '', 'Identificación del certificado o etiqueta de calibración y su vigencia. Ejemplo: CAL-2026-114, vigente al 15/12/2026.'],
+            ['seleccion', 'Selección de piezas y aleatorización', 'area', '', 'Cómo se eligieron las piezas (deben representar el rango real de variación del proceso) y cómo se aleatorizó el orden de medición.'],
+            ['observaciones', 'Observaciones del estudio', 'area', '', 'Condiciones relevantes durante el estudio: ambiente, incidencias, piezas reemplazadas o cualquier evento que afecte la interpretación.'],
+            ['conclusion', 'Conclusión del analista', 'area', '', 'Opinión del analista sobre el resultado: si el sistema de medición es adecuado para su uso y por qué.'],
+            ['acciones', 'Acciones / recomendaciones', 'area', '', 'Acciones propuestas (capacitación, mantenimiento, mejora del dispositivo, repetir el estudio), con responsable y fecha cuando aplique.'],
+            ['dictamen', 'Dictamen', 'select', ['', 'Aprobado', 'Aprobado condicionado', 'No aprobado'], 'Decisión final sobre el sistema de medición. La herramienta sugiere un dictamen según los criterios AIAG, pero la decisión es del responsable de Calidad.'],
+            ['revalidacion', 'Próxima revalidación', 'date', '', 'Fecha en que debe repetirse el estudio, según el plan de calibración o el procedimiento interno.'],
+            ['elaboro', 'Elaboró', 'text', '', 'Nombre de quien elabora el reporte. La firma se hace a mano sobre el documento impreso.'],
+            ['reviso', 'Revisó', 'text', '', 'Nombre de quien revisa el reporte. La firma se hace a mano sobre el documento impreso.'],
+            ['aprobo', 'Aprobó', 'text', '', 'Nombre de quien autoriza el reporte. La firma se hace a mano sobre el documento impreso.']
+        ];
+
+        function abrirDatosReporte() {
+            const fl = faltantes();
+            if (fl.length) { alert("No se puede generar el reporte: el estudio está incompleto.\n\n" + textoFaltantes(fl)); return; }
+            const g = leerDatos('ryr_reporte', {}), cont = $('rep-campos');
+            cont.innerHTML = '';
+            CAMPOS_REPORTE.forEach(([k, et, tipo, def, ayuda, fijo]) => {
+                const div = document.createElement('div'); div.className = 'form-group' + (tipo === 'area' ? ' completo' : '');
+                const lab = document.createElement('label');
+                lab.innerHTML = esc(et) + (fijo ? ' <span class="chip-fijo">no editable</span>' : '') +
+                    ` <span class="info-i" tabindex="0" role="button" aria-label="Información: ${esc(et)}" data-tip="${esc(ayuda)}" onclick="this.classList.toggle('abierto')" onblur="this.classList.remove('abierto')">i</span>`;
+                div.appendChild(lab);
+                let el;
+                if (tipo === 'area') { el = document.createElement('textarea'); el.rows = 3; }
+                else if (tipo === 'select') { el = document.createElement('select'); def.forEach(o => { const op = document.createElement('option'); op.value = o; op.textContent = o || '(sin definir)'; el.appendChild(op); }); }
+                else { el = document.createElement('input'); el.type = tipo; }
+                el.id = 'rep-f-' + k;
+                if (fijo) { el.readOnly = true; el.className = 'campo-fijo'; el.value = def; }
+                else el.value = g[k] !== undefined ? g[k] : (k === 'elaboro' ? ((usuarioActual() || {}).nombre || configuracion.visa) : (tipo === 'select' ? '' : def));
+                div.appendChild(el); cont.appendChild(div);
+            });
+            $('modal-datos-reporte').classList.remove('hidden');
+        }
+        function cerrarDatosReporte() { $('modal-datos-reporte').classList.add('hidden'); }
+        function cerrarReporte() { $('modal-reporte').classList.add('hidden'); }
+        function editarDatosReporte() { cerrarReporte(); abrirDatosReporte(); }
+
+        function generarReporte() {
+            const f = {}; CAMPOS_REPORTE.forEach(([k, , , def, , fijo]) => { f[k] = fijo ? def : String($('rep-f-' + k).value || '').trim(); });
+            guardarDatos('ryr_reporte', f);
+            const r = configuracion.tipo === 'Variables' ? verResultadosVariables(true) : verResultados(true);
+            if (!r) return;
+            $('rep-contenido').innerHTML = construirReporteHTML(r, f);
+            $('modal-datos-reporte').classList.add('hidden');
+            $('modal-reporte').classList.remove('hidden');
+        }
+
+        function guardarReportePDF() {
+            const previo = document.title;
+            document.title = 'Reporte R&R ' + String(configuracion.equipo).replace(/[\\/:*?"<>|]+/g, '-');
+            document.body.classList.add('imp-rep');
+            const restaurar = () => { document.title = previo; document.body.classList.remove('imp-rep'); window.removeEventListener('afterprint', restaurar); };
+            window.addEventListener('afterprint', restaurar);
+            window.print();
+        }
+
+        /* ---- Registro del usuario (se captura en el portal e identifica a la persona en estudios y reportes) ---- */
+        const REQUIERE_REGISTRO = true;
+        const PLANTAS = [
+            { nombre: 'Amatlán de los Reyes, Ver', normas: ['FSSC 22000', 'IATF 16949', 'ISO 9001'] },
+            { nombre: 'Apaseo el Grande, Gto', normas: ['FSSC 22000', 'ISO 9001'] },
+            { nombre: 'Salinas Victoria, NL', normas: ['ISO 9001'] }
+        ];
+        function usuarioActual() {
+            try { const u = JSON.parse(localStorage.getItem('msa_usuario')); return (u && u.nombre && u.usuario) ? u : null; } catch (e) { return null; }
+        }
+        function cambiarUsuario() { localStorage.removeItem('msa_usuario'); location.href = 'index.html'; }
+        function llenarUsuario() {
+            const u = usuarioActual();
+            $('usuario-actual').textContent = u ? `${u.nombre} (${u.usuario})` : '';
+            $('btn-cambiar-usuario').classList.toggle('hidden', !u);
+            if (u && !$('cfg-visa').value) $('cfg-visa').value = u.usuario;
+            $('cfg-planta').innerHTML = '<option value="">(sin especificar)</option>' + PLANTAS.map(p => `<option value="${esc(p.nombre)}">${esc(p.nombre)}</option>`).join('');
+            try { $('cfg-planta').value = localStorage.getItem('msa_planta') || ''; } catch (e) { }
+        }
+        if (REQUIERE_REGISTRO && !usuarioActual()) location.replace('index.html');
+        llenarUsuario();
+        if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { }));
+
+        function refNormasHTML(planta) {
+            const p = PLANTAS.find(x => x.nombre === planta);
+            return ((!p || p.normas.includes('IATF 16949')) ? '<li>IATF 16949:2016, cláusula 7.1.5.1.1: Análisis del sistema de medición.</li>' : '') +
+                '<li>ISO 9001:2015, cláusula 7.1.5: Recursos de seguimiento y medición.</li>';
+        }
+
+        const nivTxt = { ok: 'ACEPTABLE', mar: 'CONDICIONALMENTE ACEPTABLE', mal: 'NO ACEPTABLE' };
+
+        function conclusionAuto(r) {
+            const R = r.R, c = configuracion, cls = nivTxt[r.peor];
+            if (c.tipo === 'Variables') {
+                const g = R.comp[0], rep = R.comp[1], rpr = R.comp[2];
+                let t = `El estudio Gage R&R (ANOVA cruzado) del equipo ${c.equipo}, con ${R.P} piezas, ${R.O} operadores y ${R.r} ensayos, arrojó un %GRR de ${g.pctSV.toFixed(2)} % respecto de la variación del estudio` + (R.tol ? ` y de ${g.pctTol.toFixed(2)} % respecto de la tolerancia` : '') + `, con un ndc de ${R.ndc}. Conforme a los criterios de AIAG MSA 4.ª ed., el sistema de medición se clasifica como ${cls}.`;
+                if (r.peor !== 'ok') t += ` La mayor parte de la variación del sistema de medición proviene de la ${rep.var >= rpr.var ? 'repetibilidad (equipo)' : 'reproducibilidad (operador)'}.`;
+                return t;
+            }
+            const T = R.aiagTotal, k = R.allStd.k;
+            return `El estudio de concordancia de atributos del equipo ${c.equipo}, con ${R.n} piezas (${R.nokParts} NOK y ${R.okParts} OK), ${R.within.length} evaluadores y ${R.m} ensayos, arrojó una efectividad total de ${T.efect.toFixed(1)} %, una tasa de omisión de ${T.omision.toFixed(1)} % y una tasa de falsa alarma de ${T.falsa.toFixed(1)} %` + (k === null ? '' : `; Kappa de todos los evaluadores contra el estándar = ${k.toFixed(4)}`) + `. Conforme a los criterios de AIAG MSA 4.ª ed., el sistema de medición se clasifica como ${cls}.` + (T.omision > 2 ? ' La tasa de omisión (piezas NOK aceptadas como OK) es el indicador crítico para la liberación de producto.' : '');
+        }
+
+        function tablaDatosReporte() {
+            const ops = todosOperadores(), nP = configuracion.muestra, nE = configuracion.ensayos, attr = configuracion.tipo === 'Atributos';
+            const mapa = new Map(registros.map(r => [`${r.Inspector}|${r.Ensayo}|${r.Pieza}`, r.Resultado]));
+            let h = '<table class="rpt-datos"><thead><tr><th rowspan="2">Pieza</th>' + (attr ? '<th rowspan="2">Estándar</th>' : '') + ops.map(o => `<th colspan="${nE}">${esc(o)}</th>`).join('') + '</tr><tr>' +
+                ops.map(() => Array.from({ length: nE }, (_, e) => `<th>E${e + 1}</th>`).join('')).join('') + '</tr></thead><tbody>';
+            for (let p = 1; p <= nP; p++) {
+                h += `<tr><td><b>${p}</b></td>` + (attr ? `<td><b>${esc(mapaEstandar[p])}</b></td>` : '');
+                ops.forEach(o => { for (let e = 1; e <= nE; e++) { const v = mapa.get(`${o}|${e}|${p}`); h += `<td${attr && v !== mapaEstandar[p] ? ' class="dif"' : ''}>${v === undefined ? '' : esc(v)}</td>`; } });
+                h += '</tr>';
+            }
+            return h + '</tbody></table>';
+        }
+
+        function criteriosReporte() {
+            const filas = configuracion.tipo === 'Variables'
+                ? [['%GRR (variación del estudio y/o tolerancia)', 'Menor a 10 %', '10 % a 30 %', 'Mayor a 30 %'], ['ndc (categorías distintas)', '5 o más', '—', 'Menor a 5']]
+                : [['Efectividad (por decisión)', '90 % o más', '80 % a 90 %', 'Menor a 80 %'], ['Tasa de omisión (NOK → OK)', '2 % o menos', '2 % a 5 %', 'Mayor a 5 %'],
+                   ['Tasa de falsa alarma (OK → NOK)', '5 % o menos', '5 % a 10 %', 'Mayor a 10 %'], ['Kappa', '0.75 o más (buena)', 'Intermedia', 'Menor a 0.40 (deficiente)']];
+            return htmlTabla(['Indicador', 'Aceptable', 'Condicional / marginal', 'No aceptable'], filas);
+        }
+
+        function fmtFechaCorta(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }); }
+
+        function construirReporteHTML(r, f) {
+            const c = configuracion, attr = c.tipo === 'Atributos', R = r.R, ops = todosOperadores();
+            const partes = r.h.split('<!--VERED-->'), info = partes[0], pp = partes[1].split('<!--FINVERED-->'), vered = pp[0], resto = pp[1];
+            const hoy = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+            const campo = v => v ? esc(v) : '<span class="linea"></span>';
+            const kv = (k, v) => `<tr><th>${k}</th><td>${campo(v)}</td></tr>`;
+            const caja = v => `<div class="rpt-texto">${esc(v || '')}</div>`;
+            const fechas = registros.map(x => x.Fecha).filter(Boolean).sort();
+            const periodo = fechas.length ? (fmtFechaCorta(fechas[0]) === fmtFechaCorta(fechas[fechas.length - 1]) ? fmtFechaCorta(fechas[0]) : fmtFechaCorta(fechas[0]) + ' al ' + fmtFechaCorta(fechas[fechas.length - 1])) : '—';
+            const tieneTol = c.lsl !== null && c.lsl !== undefined && c.usl !== null && c.usl !== undefined;
+            const espec = attr ? 'Criterio OK / NOK definido por el master (estándar) del estudio' : (tieneTol ? `LSL ${c.lsl} / USL ${c.usl} (tolerancia ${+(c.usl - c.lsl).toFixed(6)})` : 'No capturada');
+            const hash = huellaEstudio(), corta = hash.slice(0, 16).toUpperCase().replace(/(.{4})/g, '$1-').slice(0, -1);
+            const folio = f.folio || 'RR-____-___';
+            const T = attr ? R.aiagTotal : null, G = attr ? null : R.comp[0];
+            const resumen = attr
+                ? [['Efectividad total (por decisión)', pill(T.efect, 90, 80, true), '≥ 90 % aceptable'], ['Tasa de omisión (NOK → OK)', pill(T.omision, 2, 5, false), '≤ 2 % aceptable'], ['Tasa de falsa alarma (OK → NOK)', pill(T.falsa, 5, 10, false), '≤ 5 % aceptable'],
+                   ['Kappa, todos los evaluadores vs estándar', f4(R.allStd.k), '≥ 0.75 buena concordancia'], ['Acuerdo por pieza, todos vs estándar', f1(R.allStd.pct) + ' %', 'referencia (criterio de Minitab)']]
+                : [['%GRR (variación del estudio)', `<span class="pill ${nivel(G.pctSV, 10, 30, false)}">${G.pctSV.toFixed(2)} %</span>`, '< 10 % aceptable']]
+                    .concat(R.tol ? [['%GRR (tolerancia)', `<span class="pill ${nivel(G.pctTol, 10, 30, false)}">${G.pctTol.toFixed(2)} %</span>`, '< 10 % aceptable']] : [])
+                    .concat([['%Contribución del GRR', G.contrib.toFixed(2) + ' %', 'referencia'], ['ndc (categorías distintas)', `<span class="pill ${R.ndc >= 5 ? 'ok' : 'mal'}">${R.ndc}</span>`, '≥ 5 adecuado']]);
+            const metodo = attr
+                ? 'Estudio de concordancia de atributos con respuestas OK / NOK contra un master (estándar). Se calcula el Kappa de Fleiss (dentro de evaluadores, entre evaluadores y contra el estándar), el porcentaje de acuerdo con intervalo de confianza exacto binomial de 95 %, y los indicadores AIAG de efectividad, tasa de omisión y tasa de falsa alarma por decisión individual.'
+                : `Estudio Gage R&R cruzado, método ANOVA. Variación del estudio = ${c.k || 6} × desviación estándar. El término de interacción pieza × operador se elimina cuando su valor p supera alfa = ${c.alfa || 0.05}. ndc = 1.41 × (DE parte a parte / DE Gage R&R), truncado. Los componentes de varianza negativos se toman como cero.`;
+            const tam = attr ? `${c.muestra} piezas (${R.nokParts} NOK / ${R.okParts} OK), ${ops.length} evaluadores, ${c.ensayos} ensayos.`
+                : `${c.muestra} piezas, ${ops.length} operadores, ${c.ensayos} ensayos (MSA 4.ª ed. sugiere típicamente 10 piezas, 3 operadores y 2 a 3 ensayos).`;
+            const dict = f.dictamen, cbx = o => `<span style="margin-right:18px;white-space:nowrap;"><span class="cbx${dict === o ? ' on' : ''}"></span>${o}</span>`;
+            const firma = (rol, nombre) => `<div class="rpt-firma"><strong>${rol}</strong><div class="esp"></div><div>${campo(nombre)}</div><small>Nombre, firma y fecha</small></div>`;
+
+            const ctl = [['Folio', folio], ['Código', f.codigo], ['Revisión', f.revision], ['Emisión', hoy]].map(([k, v]) => `<tr><th>${k}</th><td>${v ? esc(v) : '&nbsp;'}</td></tr>`).join('');
+            const cab = `<div class="rpt-cab"><img src="${$('logo-marca').src}" alt="Fischer"><div class="rpt-cab-tit"><strong>REPORTE DE ESTUDIO R&amp;R</strong><span>Análisis del Sistema de Medición (MSA) · ${attr ? 'Concordancia de atributos' : 'Variables (Gage R&amp;R)'}</span></div><table class="rpt-ctl">${ctl}</table></div>`;
+            const pie = `<div class="rpt-pie"><span>Fischer MSA Studio v${VERSION_APP} · Folio ${esc(folio)} · Huella ${corta}</span><span>Documento generado el ${hoy}</span></div>`;
+
+            const s1 = `<div class="rpt-sec"><h2 class="rpt-h">1. Identificación del estudio</h2><table class="rpt-kv">` +
+                kv('Equipo / dispositivo de medición', c.equipo) + kv('Planta', c.planta) + kv('Característica medida', f.caracteristica) + kv('Especificación', espec) + kv('Unidad de medida', f.unidad) + kv('Resolución del instrumento', f.resolucion) +
+                kv('Nº de parte / cliente', f.parte) + kv('Calibración vigente (ID y fecha)', f.calibracion) + kv('Tipo de estudio', attr ? 'Atributos (OK / NOK): concordancia contra master' : 'Variables: Gage R&R cruzado (ANOVA)') +
+                kv('Responsable del estudio (VISA)', c.visa) + kv('Periodo de captura', periodo) + kv('Operadores', ops.join(', ')) + kv('Piezas · ensayos · registros', `${c.muestra} piezas · ${c.ensayos} ensayos · ${registros.length} registros`) + `</table></div>`;
+            const s2 = `<div class="rpt-sec"><h2 class="rpt-h">2. Resumen ejecutivo</h2>${vered}${htmlTabla(['Indicador', 'Resultado', 'Criterio AIAG'], resumen)}</div>`;
+            const s3 = `<div class="rpt-sec rpt-salto"><h2 class="rpt-h">3. Plan del estudio, método y criterios de aceptación</h2><table class="rpt-kv">` + kv('Tamaño del estudio', tam) + `</table>` +
+                `<h3 class="rpt-h2">Selección de piezas y aleatorización</h3>${caja(f.seleccion)}<h3 class="rpt-h2">Método de análisis</h3><p class="rpt-p">${esc(metodo)}</p>` +
+                `<h3 class="rpt-h2">Criterios de aceptación (AIAG MSA, 4.ª edición)</h3>${criteriosReporte()}<p class="rpt-aviso">Cuando el cliente establezca criterios más estrictos, prevalecen los requisitos específicos del cliente.</p>` +
+                `<h3 class="rpt-h2">Referencias normativas</h3><ul class="rpt-lista"><li>AIAG. Measurement Systems Analysis (MSA), Reference Manual, 4.ª edición (2010).</li>${refNormasHTML(c.planta)}<li>Requisitos específicos del cliente aplicables, cuando existan.</li><li>Procedimiento interno del SGC: <span class="linea" style="display:inline-block;min-width:200px;"></span></li></ul>` +
+                `<h3 class="rpt-h2">Observaciones del estudio</h3>${caja(f.observaciones)}</div>`;
+            const s4 = `<div class="rpt-sec rpt-salto"><h2 class="rpt-h">4. Resultados del estudio</h2>${info}${resto}</div>`;
+            const s5 = `<div class="rpt-sec rpt-salto"><h2 class="rpt-h">5. Datos del estudio y trazabilidad</h2>${tablaDatosReporte()}` +
+                (attr ? '<p class="rpt-aviso">Las celdas en rojo indican respuestas que difieren del estándar.</p>' : '') +
+                `<h3 class="rpt-h2">Huella de integridad de los datos (SHA-256)</h3><div class="rpt-hash">${hash}</div>` +
+                `<p class="rpt-aviso">Calculada sobre el tipo de estudio, equipo, piezas, ensayos y todos los registros ordenados (operador | ensayo | pieza | resultado)${attr ? ' más el estándar' : ''}. Permite comprobar que el respaldo de datos archivado corresponde a este reporte. Fischer MSA Studio v${VERSION_APP}; cálculos verificados contra Minitab con estudios de referencia.</p></div>`;
+            const s6 = `<div class="rpt-sec rpt-salto"><h2 class="rpt-h">6. Conclusión, dictamen y aprobación</h2>` +
+                `<h3 class="rpt-h2">Conclusión sugerida por los resultados</h3><div class="rpt-texto">${esc(conclusionAuto(r))}</div><p class="rpt-aviso">Texto generado automáticamente a partir de los resultados; el responsable de Calidad debe confirmarlo o modificarlo.</p>` +
+                `<h3 class="rpt-h2">Conclusión del analista</h3>${caja(f.conclusion)}<h3 class="rpt-h2">Acciones / recomendaciones</h3>${caja(f.acciones)}` +
+                `<h3 class="rpt-h2">Dictamen</h3><p class="rpt-p">${cbx('Aprobado')}${cbx('Aprobado condicionado')}${cbx('No aprobado')}</p>` +
+                `<table class="rpt-kv">${kv('Dictamen sugerido por criterios AIAG', nivTxt[r.peor].charAt(0) + nivTxt[r.peor].slice(1).toLowerCase())}${kv('Próxima revalidación', f.revalidacion ? fmtFechaCorta(f.revalidacion + 'T12:00:00') : '')}</table>` +
+                `<div class="rpt-firmas">${firma('Elaboró', f.elaboro)}${firma('Revisó', f.reviso)}${firma('Aprobó', f.aprobo)}</div></div>`;
+
+            return `<table class="rpt-tabla"><thead><tr><td>${cab}</td></tr></thead><tfoot><tr><td>${pie}</td></tr></tfoot><tbody><tr><td>${s1}${s2}${s3}${s4}${s5}${s6}</td></tr></tbody></table>`;
+        }
+
+        function reiniciarTodo() {
+            if (confirm("¿Desea reiniciar el estudio? Se eliminarán todos los datos capturados.\n\nSi aún no genera el respaldo, cancele y use primero 'Generar respaldo'.")) {
+                KEYS.forEach(k => localStorage.removeItem(k));   // solo las llaves de esta herramienta
+                location.reload();
+            }
+        }
+    </script>
+
+</body></html>

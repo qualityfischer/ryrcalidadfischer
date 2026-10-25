@@ -1,0 +1,32 @@
+{
+  "name": "Fischer MSA Studio",
+  "short_name": "MSA Studio",
+  "description": "Análisis de sistemas de medición: R&R de variables y atributos, con resultados y reportes.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "es-MX",
+  "background_color": "#0B2545",
+  "theme_color": "#0B2545",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
